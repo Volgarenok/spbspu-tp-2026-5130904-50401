@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/arkadiy/Documents/GitHub/spbspu-tp-2026-5130904-50401/Untitled/burukov.arkadiy/T0",
+      "program": "/Users/arkadiy/Documents/GitHub/spbspu-tp-2026-5130904-50401/Untitled/burukov.arkadiy/T0/build/Debug/outDebug"
+    }
+  ]
+}
