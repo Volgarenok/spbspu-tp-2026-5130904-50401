@@ -7,8 +7,6 @@
 
 namespace vasyakin
 {
-  using NotesMap = std::unordered_map<std::string, std::shared_ptr< Note > >;
-
   void note(std::istream&, std::ostream&, NotesMap&);
   void line(std::istream&, std::ostream&, NotesMap&);
   void show(std::istream&, std::ostream&, NotesMap&);

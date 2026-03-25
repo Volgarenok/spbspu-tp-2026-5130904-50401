@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 
 namespace vasyakin
 {
@@ -23,6 +24,8 @@ namespace vasyakin
     std::vector< std::string > lines_;
     std::vector< std::weak_ptr< Note > > links_;
   };
+
+  using NotesMap = std::unordered_map<std::string, std::shared_ptr< Note > >;
 }
 
 #endif

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <limits>
-#include <unordered_map>
 #include "commands.hpp"
 
 int main()

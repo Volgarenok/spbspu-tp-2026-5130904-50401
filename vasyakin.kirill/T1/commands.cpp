@@ -4,7 +4,7 @@
 namespace vasyakin
 {
 
-  void vasyakin::note(std::istream& in, std::ostream&, NotesMap& notes)
+  void note(std::istream& in, std::ostream&, NotesMap& notes)
   {
     std::string name;
     if (!(in >> name))
@@ -18,7 +18,7 @@ namespace vasyakin
     }
   }
 
-  void vasyakin::line(std::istream& in, std::ostream&, NotesMap& notes)
+  void line(std::istream& in, std::ostream&, NotesMap& notes)
   {
     std::string name, txt;
     if (!(in >> name >> std::quoted(txt)))
@@ -34,7 +34,7 @@ namespace vasyakin
     it->second->noteLine(txt);
   }
 
-  void vasyakin::show(std::istream& in, std::ostream& out, NotesMap& notes)
+  void show(std::istream& in, std::ostream& out, NotesMap& notes)
   {
     std::string name;
     if (!(in >> name))
@@ -50,7 +50,7 @@ namespace vasyakin
     it->second->noteShow();
   }
 
-  void vasyakin::drop(std::istream& in, std::ostream&, NotesMap& notes)
+  void drop(std::istream& in, std::ostream&, NotesMap& notes)
   {
     std::string name;
     if (!(in >> name))
@@ -64,7 +64,7 @@ namespace vasyakin
     }
   }
 
-  void vasyakin::link(std::istream& in, std::ostream&, NotesMap& notes)
+  void link(std::istream& in, std::ostream&, NotesMap& notes)
   {
     std::string from_name, to_name;
     if (!(in >> from_name >> to_name))
@@ -81,7 +81,7 @@ namespace vasyakin
     from_it->second->noteLink(to_it->second);
   }
 
-  void vasyakin::halt(std::istream& in, std::ostream&, NotesMap& notes)
+  void halt(std::istream& in, std::ostream&, NotesMap& notes)
   {
     std::string from_name, to_name;
     if (!(in >> from_name >> to_name))
@@ -98,7 +98,7 @@ namespace vasyakin
     from_it->second->noteHalt(to_it->second);
   }
 
-  void vasyakin::mind(std::istream& in, std::ostream& out, NotesMap& notes)
+  void mind(std::istream& in, std::ostream& out, NotesMap& notes)
   {
     std::string name;
     if (!(in >> name))
@@ -114,7 +114,7 @@ namespace vasyakin
     it->second->noteMind();
   }
 
-  void vasyakin::expired(std::istream& in, std::ostream& out, NotesMap& notes)
+  void expired(std::istream& in, std::ostream& out, NotesMap& notes)
   {
     std::string name;
     if (!(in >> name))
@@ -130,7 +130,7 @@ namespace vasyakin
     out << it->second->noteExpired() << '\n';
   }
 
-  void vasyakin::refresh(std::istream& in, std::ostream&, NotesMap& notes)
+  void refresh(std::istream& in, std::ostream&, NotesMap& notes)
   {
     std::string name;
     if (!(in >> name))
