@@ -60,6 +60,46 @@ namespace vasyakin
     }
   }
 
+  void Note::noteMind() const
+  {
+    for (auto it = links_.begin(); it != links_.end(); ++it)
+    {
+      if (auto shr_ptr = it->lock())
+      {
+        std::cout << shr_ptr->getName() << '\n';
+      }
+    }
+  }
+
+  size_t Note::noteExpired() const
+  {
+    size_t count = 0;
+    for (auto it = links_.begin(); it != links_.end(); ++it)
+    {
+      if (!it->lock())
+      {
+        ++count;
+      }
+    }
+    return count;
+  }
+
+  void Note::noteRefresh()
+  {
+    auto it = links_.begin();
+    while (it != links_.end())
+    {
+      if (auto shr_ptr = it->lock())
+      {
+        ++it;
+      }
+      else
+      {
+        it = links_.erase(it);
+      }
+    }
+  }
+
   const std::string& Note::getName() const
   {
     return name_;
