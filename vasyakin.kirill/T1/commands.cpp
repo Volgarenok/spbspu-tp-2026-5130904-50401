@@ -49,4 +49,52 @@ namespace vasyakin
     }
     it->second->noteShow();
   }
+
+  void vasyakin::drop(std::istream& in, std::ostream&, NotesMap& notes)
+  {
+    std::string name;
+    if (!(in >> name))
+    {
+      throw std::logic_error("");
+    }
+
+    if (notes.erase(name) == 0)
+    {
+      throw std::logic_error("");
+    }
+  }
+
+  void vasyakin::link(std::istream& in, std::ostream&, NotesMap& notes)
+  {
+    std::string from_name, to_name;
+    if (!(in >> from_name >> to_name))
+    {
+      throw std::logic_error("");
+    }
+
+    auto from_it = notes.find(from_name);
+    auto to_it = notes.find(to_name);
+    if (from_it == notes.end() || to_it == notes.end())
+    {
+      throw std::logic_error("");
+    }
+    from_it->second->noteLink(to_it->second);
+  }
+
+  void vasyakin::halt(std::istream& in, std::ostream&, NotesMap& notes)
+  {
+    std::string from_name, to_name;
+    if (!(in >> from_name >> to_name))
+    {
+      throw std::logic_error("");
+    }
+
+    auto from_it = notes.find(from_name);
+    auto to_it = notes.find(to_name);
+    if (from_it == notes.end() || to_it == notes.end())
+    {
+      throw std::logic_error("");
+    }
+    from_it->second->noteHalt(to_it->second);
+  }
 }
