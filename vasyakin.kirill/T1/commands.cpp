@@ -97,4 +97,50 @@ namespace vasyakin
     }
     from_it->second->noteHalt(to_it->second);
   }
+
+  void vasyakin::mind(std::istream& in, std::ostream& out, NotesMap& notes)
+  {
+    std::string name;
+    if (!(in >> name))
+    {
+      throw std::logic_error("");
+    }
+
+    auto it = notes.find(name);
+    if (it == notes.end())
+    {
+      throw std::logic_error("");
+    }
+    it->second->noteMind();
+  }
+
+  void vasyakin::expired(std::istream& in, std::ostream& out, NotesMap& notes)
+  {
+    std::string name;
+    if (!(in >> name))
+    {
+      throw std::logic_error("");
+    }
+    auto it = notes.find(name);
+    if (it == notes.end())
+    {
+      throw std::logic_error("");
+    }
+    out << it->second->noteExpired() << '\n';
+  }
+
+  void vasyakin::refresh(std::istream& in, std::ostream&, NotesMap& notes)
+  {
+    std::string name;
+    if (!(in >> name))
+    {
+      throw std::logic_error("");
+    }
+    auto it = notes.find(name);
+    if (it == notes.end())
+    {
+      throw std::logic_error("");
+    }
+    it->second->noteRefresh();
+  }
 }
