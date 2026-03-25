@@ -121,7 +121,7 @@ namespace vasyakin
     {
       throw std::logic_error("");
     }
-    
+
     auto it = notes.find(name);
     if (it == notes.end())
     {

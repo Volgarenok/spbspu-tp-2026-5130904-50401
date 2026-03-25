@@ -8,7 +8,7 @@ int main()
   vasyakin::NotesMap notes;
   using cmd_t = void(*)(std::istream&, std::ostream&, vasyakin::NotesMap&);
   std::unordered_map< std::string, cmd_t > cmds;
-  
+
   cmds["note"] = vasyakin::note;
   cmds["line"] = vasyakin::line;
   cmds["show"] = vasyakin::show;
