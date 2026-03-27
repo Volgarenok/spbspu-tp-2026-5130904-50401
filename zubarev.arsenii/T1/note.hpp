@@ -1,23 +1,20 @@
-#include <iostream>
+#ifndef NOTE_HPP
+#define NOTE_HPP
+
+#include <iosfwd>
 #include <vector>
-struct Note {
-  std::string name_;
-  std::string text_;
-  std::vector<std::weak_ptr<std::string>> links_;
-};
-class NoteBook {
-  public:
-    NoteBook();
-    ~NoteBook();
+namespace zubarev
+{
+  struct Note
+  {
+    std::string name_;
+    std::vector< std::string > lines_;
+    std::vector< std::weak_ptr< Note > > links_;
 
-    void note(std::string& name);
-    void line(std::string& text);
-    void show(std::string& name);
-    void drop(std::string& name);
-
-    void link(std::string)
-
-  private:
-
-
+    Note(std::string name):
+      name_(name)
+    {}
+  };
 }
+
+#endif

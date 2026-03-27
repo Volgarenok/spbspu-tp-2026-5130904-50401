@@ -1,44 +1,30 @@
+#include "commands.hpp"
 #include <iomanip>
 #include <iostream>
-#include <map>
 #include <string>
 #include <unordered_map>
 #include <vector>
-void hi(std::ostream& out, std::istream&, std::vector< std::string >&)
-{
-  out << "Hello, username!\n";
-}
-void noop(std::ostream&, std::istream&, std::vector< std::string >&)
-{}
-void add_string(std::ostream&, std::istream& in, std::vector< std::string >& db)
-{
-  std::string str;
-  in >> std::quoted(str);
-  db.push_back(str);
-}
-void show_last(std::ostream& out, std::istream&, std::vector< std::string >& db)
-{
-  if (db.empty()) {
-    throw std::logic_error("db is empty");
-  }
-  out << db.back() << '\n';
-}
+
 int main()
 {
-  using cmd_t=void (*)(std::ostream&, std::istream&, std::vector< std::string >&);
-  std::vector< std::string > db;
-  std::unordered_map< std::string,cmd_t > cmds;
-  cmds["add"] = add_string;
-  cmds["hello"] = hi;
-  cmds["noop"] = noop;
-  cmds["add"] = add_string;
-  cmds["show-last"] = show_last;
+  using cmd_t = void (*)(std::istream&, std::ostream&, zubarev::NoteBook&);
+
+  std::unordered_map< std::string, cmd_t > cmds;
+  cmds["note"] = zubarev::cmd_note;
+  cmds["line"] = zubarev::cmd_line;
+  cmds["show"] = zubarev::cmd_show;
+  cmds["drop"] = zubarev::cmd_drop;
+  cmds["link"] = zubarev::cmd_link;
+  cmds["halt"] = zubarev::cmd_halt;
+  cmds["mind"] = zubarev::cmd_mind;
+  cmds["expired"] = zubarev::cmd_expired;
+  cmds["refresh"] = zubarev::cmd_refresh;
 
   std::string cmd;
+  zubarev::NoteBook notebook;
   while (std::cin >> cmd) {
     try {
-      cmds.at(cmd)(std::cout, std::cin, db);
-
+      cmds.at(cmd)(std::cin, std::cout, notebook);
     } catch (const std::out_of_range&) {
       std::cout << "<INVALID COMMAND>\n";
       auto toignore = std::numeric_limits< std::streamsize >::max();
