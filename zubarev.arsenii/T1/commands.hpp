@@ -3,7 +3,7 @@
 
 #include <iomanip>
 #include <iosfwd>
-// #include <iostream>
+
 #include "notebook.hpp"
 namespace zubarev
 {

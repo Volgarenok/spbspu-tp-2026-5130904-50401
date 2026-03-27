@@ -83,9 +83,11 @@ namespace zubarev
     if (it != notes_.end()) {
 
       auto& linksFrom = it->second->links_;
-      for (auto itLink = linksFrom.begin(); itLink != linksFrom.end(); ++itLink) {
+      for (auto itLink = linksFrom.begin(); itLink != linksFrom.end(); ) {
         if (!itLink->lock()) {
           linksFrom.erase(itLink);
+        } else {
+          ++itLink;
         }
       }
     }
