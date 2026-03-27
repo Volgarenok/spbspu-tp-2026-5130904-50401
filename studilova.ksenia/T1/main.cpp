@@ -8,6 +8,18 @@ int main()
 {
   studilova::Context ctx;
   std::unordered_map< std::string, studilova::cmd_t > cmds;
+
+  cmds["note"] = studilova::note;
+  cmds["line"] = studilova::line;
+  cmds["show"] = studilova::show;
+  cmds["drop"] = studilova::drop;
+
+  cmds["link"] = studilova::link;
+  cmds["halt"] = studilova::halt;
+  cmds["mind"] = studilova::mind;
+  cmds["expired"] = studilova::expired;
+  cmds["refresh"] = studilova::refresh;
+
   std::string cmd;
 
   while (std::cin >> cmd)
