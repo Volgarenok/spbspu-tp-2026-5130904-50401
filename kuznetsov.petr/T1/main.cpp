@@ -155,29 +155,33 @@ void removeRemovedLinks(std::istream& in, std::ostream& out, notepad_t& db)
 
 int main()
 {
+  using command = void(*)(std::istream&, std::ostream&, notepad_t&);
+  using constCommand = void(*)(std::istream&, std::ostream&, const notepad_t&);
+  std::unordered_map< std::string, command> cmds;
+  cmds["note"] = addNote;
+  cmds["line"] = addLine;
+  cmds["drop"] = drop;
+  cmds["link"] = linkNotes;
+  cmds["halt"] = removeLink;
+  cmds["refresh"] = removeRemovedLinks;
+  std::unordered_map< std::string, constCommand> constCmds;
+  constCmds["show"] = show;
+  constCmds["mind"] = showLinks;
+  constCmds["expired"] = getCountRemovedNotes;
   notepad_t db;
   std::string cmd;
   while(std::cin >> cmd) {
-    if (cmd == "note") {
-      addNote(std::cin, std::cout, db);
-    } else if (cmd == "show") {
-      show(std::cin, std::cout, db);
-    } else if (cmd == "line") {
-      addLine(std::cin, std::cout, db);
-    } else if (cmd == "drop") {
-      drop(std::cin, std::cout, db);
-    } else if (cmd == "link") {
-      linkNotes(std::cin, std::cout, db);
-    } else if (cmd == "mind") {
-      showLinks(std::cin, std::cout, db);
-    } else if (cmd == "halt") {
-      removeLink(std::cin, std::cout, db);
-    } else if (cmd == "expired") {
-      getCountRemovedNotes(std::cin, std::cout, db);
-    } else if (cmd == "refresh") {
-      removeRemovedLinks(std::cin, std::cout, db);
+    try {
+      if (constCmds.count(cmd)) {
+        constCmds.at(cmd)(std::cin, std::cout, db);
+      } else if (cmds.count(cmd)) {
+        cmds.at(cmd)(std::cin, std::cout, db);
+      } else {
+        std::cout << "<INVALID COMMAND>\n";
+      }
+    } catch (const std::logic_error& e) {
+      std::cout << "<INVALID COMMAND: " << e.what() << ">\n";
     }
   }
-  
+  return 0;
 }
-
