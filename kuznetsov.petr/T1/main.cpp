@@ -85,6 +85,36 @@ void showLinks(std::istream& in, std::ostream& out, const notepad_t& db)
   }
 }
 
+void removeLink(std::istream& in, std::ostream&, notepad_t& db)
+{
+  std::string from;
+  std::string to;
+  in >> from;
+  in >> to;
+  if (!db.count(from)) {
+    throw std::logic_error("\"from note\" does not exist");
+  }
+  if (!db.count(to)) {
+    throw std::logic_error("\"to note\" does not exist");
+  }
+  std::shared_ptr< kuz::Record > fromNote = db.at(from);
+  std::shared_ptr< kuz::Record > toNote = db.at(to);
+  bool removed = false;
+  auto iter = fromNote->refs_.begin();
+  for (; iter != fromNote->refs_.end(); iter++) {
+    if (std::shared_ptr< kuz::Record > curr = iter->lock()) {
+      if (curr->name_ == toNote->name_) {
+        fromNote->refs_.erase(iter);
+        removed = true;
+        break;
+      }
+    }
+  }
+  if (!removed) {
+    throw std::logic_error("first note does not see second note");
+  }
+}
+
 int main()
 {
   notepad_t db;
@@ -102,6 +132,8 @@ int main()
       linkNotes(std::cin, std::cout, db);
     } else if (cmd == "mind") {
       showLinks(std::cin, std::cout, db);
+    } else if (cmd == "halt") {
+      removeLink(std::cin, std::cout, db);
     }
 
   }
