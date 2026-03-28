@@ -53,6 +53,23 @@ void drop(std::istream& in, std::ostream&, notepad_t& db)
   db.erase(name);
 }
 
+void linkNotes(std::istream& in, std::ostream&, notepad_t& db)
+{
+  std::string from;
+  std::string to;
+  in >> from;
+  in >> to;
+  if (!db.count(from)) {
+    throw std::logic_error("\"from note\" does not exist");
+  }
+  if (!db.count(to)) {
+    throw std::logic_error("\"to note\" does not exist");
+  }
+  std::shared_ptr< kuz::Record > fromNote = db.at(from);
+  std::shared_ptr< kuz::Record > toNote = db.at(to);
+  fromNote->refs_.push_back(toNote);
+}
+
 int main()
 {
   notepad_t db;
@@ -66,7 +83,10 @@ int main()
       addLine(std::cin, std::cout, db);
     } else if (cmd == "drop") {
       drop(std::cin, std::cout, db);
+    } else if (cmd == "link") {
+      linkNotes(std::cin, std::cout, db);
     }
+
 
   }
   
