@@ -70,6 +70,21 @@ void linkNotes(std::istream& in, std::ostream&, notepad_t& db)
   fromNote->refs_.push_back(toNote);
 }
 
+void showLinks(std::istream& in, std::ostream& out, const notepad_t& db)
+{
+  std::string name;
+  in >> name;
+  if (!db.count(name)) {
+    throw std::logic_error("this note does not exist");
+  }
+  const std::vector< std::weak_ptr< kuz::Record > >& links = db.at(name)->refs_;
+  for (const auto link : links) {
+    if (const std::shared_ptr< kuz::Record > spt = link.lock()) {
+      out << spt->name_ << '\n';
+    }
+  }
+}
+
 int main()
 {
   notepad_t db;
@@ -85,8 +100,9 @@ int main()
       drop(std::cin, std::cout, db);
     } else if (cmd == "link") {
       linkNotes(std::cin, std::cout, db);
+    } else if (cmd == "mind") {
+      showLinks(std::cin, std::cout, db);
     }
-
 
   }
   
