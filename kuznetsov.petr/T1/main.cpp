@@ -134,6 +134,25 @@ void getCountRemovedNotes(std::istream& in, std::ostream& out, const notepad_t& 
   out << count << '\n';
 }
 
+void removeRemovedLinks(std::istream& in, std::ostream& out, notepad_t& db)
+{
+  std::string name;
+  in >> name;
+  if (!db.count(name)) {
+    throw std::logic_error("this note does not exist");
+  }
+  std::shared_ptr< kuz::Record > from = db.at(name);
+  std::vector< std::weak_ptr< kuz::Record > >& links = from->refs_;
+  auto iter = links.begin();
+  while (iter != links.end()) {
+    if (iter->expired()) {
+      iter = links.erase(iter);
+    } else {
+      iter++;
+    }
+  }
+}
+
 int main()
 {
   notepad_t db;
@@ -155,8 +174,9 @@ int main()
       removeLink(std::cin, std::cout, db);
     } else if (cmd == "expired") {
       getCountRemovedNotes(std::cin, std::cout, db);
+    } else if (cmd == "refresh") {
+      removeRemovedLinks(std::cin, std::cout, db);
     }
-
   }
   
 }
