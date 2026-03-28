@@ -25,7 +25,7 @@ void addLine(std::istream& in, std::ostream&, notepad_t& db)
     in >> std::quoted(line);
     lines.push_back(line);
   } catch (...) {
-    throw std::logic_error("this note is not exist");
+    throw std::logic_error("this note does not exist");
   }
 }
 
@@ -39,10 +39,19 @@ void show(std::istream& in, std::ostream& out, const notepad_t& db)
       out << str << '\n';
     }
   } catch (...) {
-    throw std::logic_error("this note is not exist");
+    throw std::logic_error("this note does not exist");
   }
 }
 
+void drop(std::istream& in, std::ostream&, notepad_t& db)
+{
+  std::string name;
+  in >> name;
+  if (db.count(name) == 0) {
+    throw std::logic_error("such note does not exist");
+  }
+  db.erase(name);
+}
 
 int main()
 {
@@ -55,6 +64,8 @@ int main()
       show(std::cin, std::cout, db);
     } else if (cmd == "line") {
       addLine(std::cin, std::cout, db);
+    } else if (cmd == "drop") {
+      drop(std::cin, std::cout, db);
     }
 
   }
