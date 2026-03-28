@@ -14,18 +14,31 @@ void addNote(std::istream& in, notepad_t& db)
   db[name] = std::make_shared< kuz::Record >(name);
 }
 
+void show(std::istream& in, std::ostream& out, const notepad_t& db)
+{
+  std::string name;
+  in >> name;
+  try {
+    const std::vector< std::string >& lines = db.at(name)->lines_;
+    for (const std::string& str : lines) {
+      out << str << '\n';
+    }
+  } catch (...) {
+    throw std::logic_error("this note is not exist");
+  }
+}
+
+
 int main()
 {
   notepad_t db;
   std::string cmd;
   while(std::cin >> cmd) {
-    if (cmd == "add") {
+    if (cmd == "note") {
       addNote(std::cin, db);
     }
 
   }
-
-  
   
 }
 
