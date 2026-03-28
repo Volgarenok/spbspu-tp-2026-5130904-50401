@@ -13,6 +13,9 @@ int main()
   cmds["line"] = &Notebook::line;
   cmds["show"] = &Notebook::show;
   cmds["drop"] = &Notebook::drop;
+  cmds["link"] = &Notebook::link;
+  cmds["halt"] = &Notebook::halt;
+  cmds["mind"] = &Notebook::mind;
 
   std::string cmd;
   while (std::cin >> cmd)
