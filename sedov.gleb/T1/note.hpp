@@ -24,7 +24,7 @@ namespace sedov
     std::vector< std::weak_ptr< Note > > links_;
   };
 
-  using NUP = std::unordered_map<std::string, std::shared_ptr< Note > >;
+  using NUM = std::unordered_map<std::string, std::shared_ptr< Note > >;
 };
 
 #endif
