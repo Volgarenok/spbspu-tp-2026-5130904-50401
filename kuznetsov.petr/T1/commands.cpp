@@ -1,10 +1,8 @@
-#include "comands.hpp"
+#include "commands.hpp"
 #include <iostream>
 #include <iomanip>
 
 namespace kuznetsov {
-  using notepad_t = std::unordered_map<std::string, std::shared_ptr<Record> >;
-
   void addNote(std::istream& in, std::ostream&, notepad_t& db)
   {
     std::string name;
