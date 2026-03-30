@@ -5,11 +5,14 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <unordered_set>
 
 struct Note
 {
+  std::string name;
   std::vector< std::string > data;
   std::vector< std::weak_ptr< Note > > refs;
+  std::unordered_set< std::string > ref_names;
   size_t expired_refs = 0;
 };
 
@@ -24,11 +27,13 @@ void makeNote(std::istream& in, std::ostream&, unordered_map_of_notes& notes)
 {
   std::string name;
   in >> name;
-  if (notes.count(name) > 0)
+  if (notes.count(name))
   {
     throw std::logic_error("Note with this name already exists");
   }
-  notes.emplace(name, std::make_shared< Note >());
+  auto shared = std::make_shared< Note >();
+  shared->name = name;
+  notes.emplace(name, shared);
 }
 
 void writeLine(std::istream& in, std::ostream&, unordered_map_of_notes& notes)
@@ -70,6 +75,74 @@ void dropNote(std::istream& in, std::ostream&, unordered_map_of_notes& notes)
   notes.erase(name);
 }
 
+void linkNote(std::istream& in, std::ostream&, unordered_map_of_notes& notes)
+{
+  std::string name_from;
+  in >> name_from;
+  if (notes.count(name_from) == 0)
+  {
+    throw std::logic_error ("No note-from with this name");
+  }
+  auto note = notes[name_from];
+  std::string name_to;
+  in >> name_to;
+  if (notes.count(name_to) == 0)
+  {
+    throw std::logic_error ("No note-to with this name");
+  }
+  if (note->ref_names.count(name_to))
+  {
+    throw std::logic_error("Referense to this note already exists");
+  }
+  note->ref_names.insert(name_to);
+  note->refs.push_back(std::weak_ptr< Note >(notes[name_to]));
+}
+
+void haltNote(std::istream& in, std::ostream&, unordered_map_of_notes& notes)
+{
+  std::string name_from;
+  in >> name_from;
+  if (notes.count(name_from) == 0)
+  {
+    throw std::logic_error ("No note-from with this name");
+  }
+  auto note = notes[name_from];
+  std::string name_to;
+  in >> name_to;
+  if (notes.count(name_to) == 0)
+  {
+    throw std::logic_error ("No note-to with this name");
+  }
+  if (note->ref_names.count(name_to) == 0)
+  {
+    throw std::logic_error("No referense to this note in " + name_from);
+  }
+  note->ref_names.erase(name_to);
+  ++note->expired_refs;
+}
+
+void mindMap(std::istream& in, std::ostream& out, unordered_map_of_notes& notes)
+{
+  std::string name_from;
+  in >> name_from;
+  if (notes.count(name_from) == 0)
+  {
+    throw std::logic_error ("No note-from with this name");
+  }
+  auto note = notes[name_from];
+  for (size_t i = 0; i < note->refs.size(); ++i)
+  {
+    if (auto shared = note->refs[i].lock())
+    {
+      std::string name = shared->name;
+      if (note->ref_names.count(name))
+      {
+        out << name << "\n";
+      }
+    }
+  }
+}
+
 int main()
 {
   std::unordered_map< std::string, std::shared_ptr< Note > > notes;
@@ -81,6 +154,9 @@ int main()
   cmds["line"] = writeLine;
   cmds["show"] = showNote;
   cmds["drop"] = dropNote;
+  cmds["link"] = linkNote;
+  cmds["halt"] = haltNote;
+  cmds["mind"] = mindMap;
 
   std::string cmd;
   while (std::cin >> cmd)
