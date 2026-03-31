@@ -25,4 +25,50 @@ namespace ulanova
     }
     return it->second->lines;
   }
+  void drop(DB& db, const std::string& name)
+  {
+    db.erase(name);
+  }
+  void link(DB& db, const std::string& from, const std::string& to)
+  {
+    auto it_from = db.find(from);
+    auto it_to = db.find(to);
+    if (it_from == db.end() || it_to == db.end())
+    {
+      throw std::logic_error("note not found");
+    }
+
+    auto& links = it_from -> second -> links;
+    for(size_t i = 0; i < links.size(); ++i)
+    {
+      auto ptr = links[i].lock();
+      if (ptr != nullptr)
+      {
+        if (ptr == it_to -> second)
+        {
+          return;
+        }
+      }
+    }
+    links.push_back(it_to -> second);
+  }
+  std::vector<std::string> mind(const DB& db, const std::string& name)
+  {
+    auto it = db.find(name);
+    if (it == db.end())
+    {
+      throw std::logic_error("note not found");
+    }
+    std::vector<std::string> results;
+    auto& links = it -> second -> links;
+    for (size_t i = 0; i< links.size();++i)
+    {
+      auto ptr = links[i].lock();
+      if (ptr != nullptr)
+      {
+        results.push_back(ptr -> name);
+      }
+    }
+    return results;
+  }
 }
