@@ -24,7 +24,7 @@ namespace ulanova
 
   void link(DB& db, const std::string& from, const std::string& to);
   void halt(DB& db, const std::string& from, const std::string& to);
-  std::vector<std::string> mind(DB& db, const std::string& name);
+  std::vector<std::string> mind(const DB& db, const std::string& name);
   size_t expired(const DB& db, const std::string& name);
   void refresh(DB& db, const std::string& name);
 }

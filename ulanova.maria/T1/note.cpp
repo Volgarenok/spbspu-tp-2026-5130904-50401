@@ -71,7 +71,7 @@ namespace ulanova
     }
     return results;
   }
-  void halt(DB& db, const std::string& from, std::string& to)
+  void halt(DB& db, const std::string& from, const std::string& to)
   {
     auto it_from = db.find(from);
     auto it_to = db.find(to);
@@ -89,7 +89,7 @@ namespace ulanova
       }
     }
   }
-  size_t expired(const DB& db, std::string& name)
+  size_t expired(const DB& db, const std::string& name)
   {
     auto it = db.find(name);
     if (it == db.end())
@@ -98,7 +98,7 @@ namespace ulanova
     }
     size_t count = 0;
     auto& links = it -> second -> links;
-    for (size_t i = 0; i < links.size(); ++i)
+    for (size_t i = 0; i < links.size(); i++)
     {
       if (links[i].lock() == nullptr)
       {
