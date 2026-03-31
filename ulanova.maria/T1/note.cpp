@@ -71,4 +71,60 @@ namespace ulanova
     }
     return results;
   }
+  void halt(DB& db, const std::string& from, std::string& to)
+  {
+    auto it_from = db.find(from);
+    auto it_to = db.find(to);
+    if(it_from == db.end() || it_to == db.end())
+    {
+      throw std::logic_error("note not found");
+    }
+    auto& links = it_from -> second -> links;
+    for (size_t i = 0; i< links.size(); ++i)
+    {
+      auto ptr = links[i].lock();
+      if (ptr != nullptr && ptr == it_to -> second)
+      {
+        links.erase(links.begin() + i);
+      }
+    }
+  }
+  size_t expired(const DB& db, std::string& name)
+  {
+    auto it = db.find(name);
+    if (it == db.end())
+    {
+      throw std::logic_error("note not found");
+    }
+    size_t count = 0;
+    auto& links = it -> second -> links;
+    for (size_t i = 0; i < links.size(); ++i)
+    {
+      if (links[i].lock() == nullptr)
+      {
+        count ++;
+      }
+    }
+    return count;
+  }
+  void refresh(DB& db, const std::string& name)
+  {
+    auto it = db.find(name);
+    if ( it == db.end())
+    {
+      throw std::logic_error("error");
+    }
+    auto& links = it -> second -> links;
+    for (size_t i = 0; i < links.size();)
+    {
+      if (links[i].lock() == nullptr)
+      {
+        links.erase(links.begin() + i);
+      }
+      else
+      {
+        i++;
+      }
+    }
+  }
 }
