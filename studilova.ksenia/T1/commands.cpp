@@ -182,3 +182,31 @@ void studilova::mind(std::istream& in, std::ostream& out, Context& ctx)
     }
   }
 }
+
+void studilova::expired(std::istream& in, std::ostream& out, Context& ctx)
+{
+  std::string name;
+  in >> name;
+
+  if(!in)
+  {
+    throw std::logic_error("Invalid");
+  }
+
+  auto it = ctx.notes.find(name);
+  if (it == ctx.notes.end())
+  {
+    throw std::logic_error("Invalid");
+  }
+
+  int count = 0;
+
+  for(const auto& w : it->second->links)
+  {
+    if (w.expired())
+    {
+      ++count;
+    }
+  }
+  out << count << "\n";
+}
