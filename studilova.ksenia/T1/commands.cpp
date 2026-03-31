@@ -3,7 +3,7 @@
 
 #include "commands.hpp"
 
-void studilova::note(std::istream& in, std::ostream& out, Context& ctx)
+void studilova::note(std::istream& in, std::ostream&, Context& ctx)
 {
   std::string name;
   in >> name;
@@ -19,7 +19,7 @@ void studilova::note(std::istream& in, std::ostream& out, Context& ctx)
   ctx.notes[name] = n;
 }
 
-void studilova::line(std::istream& in, std::ostream& out, Context& ctx)
+void studilova::line(std::istream& in, std::ostream&, Context& ctx)
 {
   std::string name;
   std::string text;
@@ -62,7 +62,7 @@ void studilova::show(std::istream& in, std::ostream& out, Context& ctx)
   }
 }
 
-void studilova::drop(std::istream& in, std::ostream& out, Context& ctx)
+void studilova::drop(std::istream& in, std::ostream&, Context& ctx)
 {
   std::string name;
   in >> name;
@@ -80,7 +80,7 @@ void studilova::drop(std::istream& in, std::ostream& out, Context& ctx)
   ctx.notes.erase(it);
 }
 
-void studilova::link(std::istream& in, std::ostream& out, Context& ctx)
+void studilova::link(std::istream& in, std::ostream&, Context& ctx)
 {
   std::string from, to;
   in >> from >> to;
@@ -112,7 +112,7 @@ void studilova::link(std::istream& in, std::ostream& out, Context& ctx)
   links.push_back(itTo->second);
 }
 
-void studilova::halt(std::istream& in, std::ostream& out, Context& ctx)
+void studilova::halt(std::istream& in, std::ostream&, Context& ctx)
 {
   std::string from, to;
   in >> from >> to;
@@ -211,7 +211,7 @@ void studilova::expired(std::istream& in, std::ostream& out, Context& ctx)
   out << count << "\n";
 }
 
-void studilova::refresh(std::istream& in, std::ostream& out, Context& ctx)
+void studilova::refresh(std::istream& in, std::ostream&, Context& ctx)
 {
   std::string name;
   in >> name;
