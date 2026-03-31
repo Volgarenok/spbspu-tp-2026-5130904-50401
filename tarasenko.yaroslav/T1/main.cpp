@@ -127,7 +127,7 @@ void mindMap(std::istream& in, std::ostream& out, unordered_map_of_notes& notes)
   in >> name_from;
   if (notes.count(name_from) == 0)
   {
-    throw std::logic_error ("No note-from with this name");
+    throw std::logic_error ("No note with this name");
   }
   auto note = notes[name_from];
   for (size_t i = 0; i < note->refs.size(); ++i)
@@ -139,6 +139,39 @@ void mindMap(std::istream& in, std::ostream& out, unordered_map_of_notes& notes)
       {
         out << name << "\n";
       }
+    }
+  }
+}
+
+void expiredLinks(std::istream& in, std::ostream& out, unordered_map_of_notes& notes)
+{
+  std::string name_from;
+  in >> name_from;
+  if (notes.count(name_from) == 0)
+  {
+    throw std::logic_error ("No note with this name");
+  }
+  out << notes[name_from]->expired_refs << "\n";
+}
+
+void refreshLinks(std::istream& in, std::ostream&, unordered_map_of_notes& notes)
+{
+  std::string name_from;
+  in >> name_from;
+  if (notes.count(name_from) == 0)
+  {
+    throw std::logic_error ("No note with this name");
+  }
+  auto note = notes[name_from];
+  for (auto it = note->ref_names.begin(); it != note->ref_names.end();)
+  {
+    if (notes.count(*it) == 0)
+    {
+      it = note->ref_names.erase(it);
+    }
+    else
+    {
+      ++it;
     }
   }
 }
@@ -157,6 +190,8 @@ int main()
   cmds["link"] = linkNote;
   cmds["halt"] = haltNote;
   cmds["mind"] = mindMap;
+  cmds["expired"] = expiredLinks;
+  cmds["refresh"] = refreshLinks;
 
   std::string cmd;
   while (std::cin >> cmd)
