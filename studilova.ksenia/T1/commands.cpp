@@ -210,3 +210,32 @@ void studilova::expired(std::istream& in, std::ostream& out, Context& ctx)
   }
   out << count << "\n";
 }
+
+void studilova::refresh(std::istream& in, std::ostream& out, Context& ctx)
+{
+  std::string name;
+  in >> name;
+
+  if (!in)
+  {
+    throw std::logic_error("Invalid");
+  }
+
+  auto it = ctx.notes.find(name);
+  if (it == ctx.notes.end())
+  {
+    throw std::logic_error("Invalid");
+  }
+
+  auto& links = it->second->links;
+
+  for (auto iter = links.begin(); iter != links.end(); )
+  {
+    if (iter->expired())
+    {
+      iter = links.erase(iter);
+    } else {
+      ++iter;
+    }
+  }
+}
