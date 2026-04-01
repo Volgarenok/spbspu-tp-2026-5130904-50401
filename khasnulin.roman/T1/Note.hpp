@@ -10,10 +10,15 @@ namespace khasnulin
 {
   struct Note
   {
+    Note(const std::string &Name):
+        name(Name)
+    {
+    }
+
     std::string name;
-    std::vector<std::string> lines;
-    std::vector<std::weak_ptr<Note>> links;
-    std::unordered_set<std::string> links_names;
+    std::vector< std::string > lines;
+    std::vector< std::weak_ptr< Note > > links;
+    std::unordered_set< std::string > links_names;
   };
 }
 
