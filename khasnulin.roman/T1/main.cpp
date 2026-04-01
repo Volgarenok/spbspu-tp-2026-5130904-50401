@@ -3,7 +3,6 @@
 #include <iostream>
 #include <istream>
 #include <limits>
-#include <memory>
 #include <ostream>
 #include <string>
 #include <unordered_map>
@@ -36,10 +35,8 @@ void addNote(std::istream &in, std::ostream &, NoteMap &notes)
 int main()
 {
   using Cmd = void (*)(std::istream &, std::ostream &, NoteMap &);
-  using ConstCmd = void (*)(std::istream &, std::ostream &, const NoteMap &);
 
   std::unordered_map< std::string, Cmd > cmds;
-  std::unordered_map< std::string, ConstCmd > constCmds;
 
   cmds["note"] = addNote;
 
@@ -54,20 +51,16 @@ int main()
       {
         cmds[cmd](std::cin, std::cout, notes);
       }
-      else if (constCmds.find(cmd) != constCmds.end())
-      {
-        constCmds[cmd](std::cin, std::cout, notes);
-      }
+
       else
       {
         std::cout << "<INVALID COMMAND>\n";
-        skipLine(std::cin);
       }
     }
     catch (const std::exception &e)
     {
       std::cout << "<INVALID COMMAND: " << e.what() << ">\n";
-      skipLine(std::cin);
     }
+    skipLine(std::cin);
   }
 }
