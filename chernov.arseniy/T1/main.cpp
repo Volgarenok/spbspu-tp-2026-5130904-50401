@@ -22,6 +22,7 @@ namespace chernov {
   class NoteBook {
   public:
     void createNote(std::string name);
+    void dropNote(std::string name);
     void addLineToNote(std::string name, std::string line);
     void showNote(std::string name, std::ostream & output);
   private:
@@ -31,6 +32,7 @@ namespace chernov {
   void cmdNote(std::istream & input, std::ostream & output, NoteBook & notebook);
   void cmdLine(std::istream & input, std::ostream & output, NoteBook & notebook);
   void cmdShow(std::istream & input, std::ostream & output, NoteBook & notebook);
+  void cmdDrop(std::istream & input, std::ostream & output, NoteBook & notebook);
 }
 
 int main()
@@ -46,6 +48,7 @@ int main()
   cmds["note"] = cmdNote;
   cmds["line"] = cmdLine;
   cmds["show"] = cmdShow;
+  cmds["drop"] = cmdDrop;
 
   std::string cmd;
   while (input >> cmd) {
@@ -95,6 +98,13 @@ void chernov::NoteBook::createNote(std::string name)
   notes_[name] = std::make_shared< Note >(name);
 }
 
+void chernov::NoteBook::dropNote(std::string name)
+{
+  if (!notes_.erase(name)) {
+    throw std::logic_error("note not found");
+  }
+}
+
 void chernov::NoteBook::addLineToNote(std::string name, std::string line)
 {
   try {
@@ -139,4 +149,11 @@ void chernov::cmdShow(std::istream & input, std::ostream & output, NoteBook & no
   std::string name;
   input >> name;
   notebook.showNote(name, output);
+}
+
+void chernov::cmdDrop(std::istream & input, std::ostream &, NoteBook & notebook)
+{
+  std::string name;
+  input >> name;
+  notebook.dropNote(name);
 }
