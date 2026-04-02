@@ -49,4 +49,5 @@ int main()
       skipLine(std::cin);
     }
   }
+  std::cout << "\n";
 }
