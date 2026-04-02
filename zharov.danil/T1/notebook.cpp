@@ -15,35 +15,45 @@ zharov::Book::Book()
   cmds_["line"] = &Book::line;
 }
 
+bool zharov::Book::isInNotes(size_t & ind, const std::string & name)
+{
+  for (size_t i = 0; i < notes_.size(); ++i) {
+    if (notes_.at(i)->name_ == name){
+      ind = i;
+      return true;
+    }
+  }
+  return false;
+}
+
+bool zharov::Book::isInNotes(const std::string & name)
+{
+  size_t ind = 0;
+  return isInNotes(ind, name);
+}
+
 void zharov::Book::note(std::istream & in, std::ostream &)
 {
   std::string name;
   in >> name;
-  for (size_t i = 0; i < notes_.size(); ++i) {
-    if (notes_.at(i)->name_ == name){
-      return;
-    }
+  if (isInNotes(name)) {
+    return;
   }
-  std::shared_ptr< Note > new_note = std::shared_ptr< Note >(new Note);
-  new_note->name_ = name;
-  new_note->text_ = "";
+  std::shared_ptr< Note > new_note = std::make_shared< Note >(name);
   notes_.push_back(new_note);
 }
 
 void zharov::Book::line(std::istream & in, std::ostream &)
 {
   std::string name;
-  in >> name;
   std::string new_line;
-  in >> std::quoted(new_line);
-  for (size_t i = 0; i < notes_.size(); ++i) {
-    if (notes_.at(i)->name_ == name){
-      notes_[i]->text_.append(new_line + '\n');
-      return;
-    }
+  in >> name >> std::quoted(new_line);
+  size_t ind = 0;
+  if (isInNotes(ind, name)) {
+    notes_.at(ind)->text_.append(new_line + '\n');
+    return;
   }
-  std::shared_ptr< Note > new_note = std::shared_ptr< Note >(new Note);
-  new_note->name_ = name;
+  std::shared_ptr< Note > new_note = std::make_shared< Note >(name);
   new_note->text_ = new_line + '\n';
   notes_.push_back(new_note);
 }
@@ -52,23 +62,57 @@ void zharov::Book::show(std::istream & in, std::ostream & out)
 {
   std::string name;
   in >> name;
-  for (size_t i = 0; i < notes_.size(); ++i) {
-    if (notes_.at(i)->name_ == name) {
-      out << notes_[i]->text_;
-      return;
-    }
+  size_t ind = 0;
+  if (isInNotes(ind, name)) {
+    out << notes_.at(ind)->text_;
+    return;
   }
   throw std::logic_error("Note not found");
 }
 
-void zharov::Book::drop(std::istream &, std::ostream &)
-{}
+void zharov::Book::drop(std::istream & in, std::ostream &)
+{
+  std::string name;
+  in >> name;
+  size_t ind = 0;
+  if (!isInNotes(ind, name)) {
+    throw std::logic_error("Note not found");
+  }
+  notes_.erase(notes_.begin() + ind);
+}
 
-void zharov::Book::link(std::istream &, std::ostream &)
-{}
+void zharov::Book::link(std::istream & in, std::ostream &)
+{
+  std::string name_from;
+  std::string name_to;
+  in >> name_from >> name_to;
+  size_t ind_from = 0;
+  size_t ind_to = 0;
+  if (!(isInNotes(ind_from, name_from) && isInNotes(ind_to, name_to))) {
+    throw std::logic_error("Note not found");
+  }
+  for (size_t i = 0; i < notes_.at(ind_from)->links_.size(); ++i) {
+    if (notes_.at(ind_from)->links_.at(i).lock() == notes_.at(ind_to)) {
+      throw std::logic_error("Already linked");
+    }
+  }
+  notes_[ind_from]->links_.push_back(notes_[ind_to]);
+}
 
-void zharov::Book::mind(std::istream &, std::ostream &)
-{}
+void zharov::Book::mind(std::istream & in, std::ostream & out)
+{
+  std::string name;
+  in >> name;
+  size_t ind = 0;
+  if (!isInNotes(ind, name)) {
+    throw std::logic_error("Note not found");
+  }
+  for (size_t i = 0; i < notes_.at(ind)->links_.size(); ++i) {
+    if (auto lnk = notes_.at(ind)->links_.at(i).lock()) {
+      out << lnk->name_ << '\n';
+    }
+  }
+}
 
 void zharov::Book::halt(std::istream &, std::ostream &)
 {}

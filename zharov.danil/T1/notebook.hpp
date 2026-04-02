@@ -7,6 +7,11 @@
 
 namespace zharov {
   struct Note {
+    Note(std::string name):
+      name_(name),
+      text_{},
+      links_{}
+    {}
     std::string name_;
     std::string text_;
     std::vector < std::weak_ptr < Note > > links_;
@@ -17,15 +22,17 @@ namespace zharov {
     using cmd_t = void(Book::*)(std::istream &, std::ostream &);
     std::unordered_map< std::string, cmd_t > cmds_;
     std::vector < std::shared_ptr< Note > > notes_;
-    void note(std::istream & in, std::ostream & out);
-    void line(std::istream & in, std::ostream & out);
-    void show(std::istream & in, std::ostream & out);
-    void drop(std::istream & in, std::ostream & out);
-    void link(std::istream & in, std::ostream & out);
-    void mind(std::istream & in, std::ostream & out);
-    void halt(std::istream & in, std::ostream & out);
-    void expired(std::istream & in, std::ostream & out);
-    void refresh(std::istream & in, std::ostream & out);
+    bool isInNotes(size_t &, const std::string &);
+    bool isInNotes(const std::string &);
+    void note(std::istream &, std::ostream &);
+    void line(std::istream &, std::ostream &);
+    void show(std::istream &, std::ostream &);
+    void drop(std::istream &, std::ostream &);
+    void link(std::istream &, std::ostream &);
+    void mind(std::istream &, std::ostream &);
+    void halt(std::istream &, std::ostream &);
+    void expired(std::istream &, std::ostream &);
+    void refresh(std::istream &, std::ostream &);
   };
 
 }
