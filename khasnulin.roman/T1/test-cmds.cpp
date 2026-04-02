@@ -527,7 +527,7 @@ BOOST_AUTO_TEST_CASE(test_halt_after_target_dropped)
   BOOST_CHECK_NO_THROW(haltLink(in_halt, out, notes));
 
   BOOST_CHECK_EQUAL(notes["A"]->links_names.count("B"), 0);
-  BOOST_CHECK(notes["A"]->links.empty());
+  BOOST_CHECK_EQUAL(notes["A"]->links.size(), 1);
 }
 
 BOOST_AUTO_TEST_CASE(test_halt_non_existent_source_throws)

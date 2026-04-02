@@ -162,7 +162,31 @@ void khasnulin::refreshLinks(std::istream &in, std::ostream &out, NoteMap &notes
 
 void khasnulin::haltLink(std::istream &in, std::ostream &out, NoteMap &notes)
 {
-  in.gcount();
-  out.flush();
-  notes.begin();
+  std::string noteFrom;
+  std::string noteTo;
+  in >> noteFrom >> noteTo;
+  if (notes.find(noteFrom) == notes.end())
+  {
+    throw std::logic_error("can't halt link: note with such name doesn't exists");
+  }
+  if (notes[noteFrom]->links_names.count(noteTo) == 0)
+  {
+    throw std::logic_error("can't halt link: note link doesn't exists in current note");
+  }
+
+  auto it = notes[noteFrom]->links.begin();
+  bool found = false;
+
+  for (; it != notes[noteFrom]->links.end() && !found; ++it)
+  {
+    std::weak_ptr< Note > &note_ptr = *it;
+    if (!note_ptr.expired() && note_ptr.lock()->name == noteTo)
+    {
+      notes[noteFrom]->links.erase(it);
+      found = true;
+    }
+  }
+
+  notes[noteFrom]->links_names.erase(noteTo);
+  out << "note link successfully deleted\n";
 }
