@@ -1,5 +1,6 @@
 #include <exception>
 
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <istream>
@@ -51,6 +52,27 @@ void addLine(std::istream &in, std::ostream &, NoteMap &notes)
   }
 }
 
+void showLine(std::istream &in, std::ostream &out, NoteMap &notes)
+{
+  std::string name;
+  in >> name;
+  if (notes.find(name) != notes.end())
+  {
+    if (notes[name]->lines.empty())
+    {
+      throw std::logic_error("can't show lines. Note doesn't exists any lines");
+    }
+    for (const auto &it : notes[name]->lines)
+    {
+      out << it << "\n";
+    }
+  }
+  else
+  {
+    throw std::logic_error("can't show lines of such note. Note doesn't exists");
+  }
+}
+
 int main()
 {
   using Cmd = void (*)(std::istream &, std::ostream &, NoteMap &);
@@ -59,6 +81,7 @@ int main()
 
   cmds["note"] = addNote;
   cmds["line"] = addLine;
+  cmds["show"] = showLine;
 
   NoteMap notes;
 
@@ -75,12 +98,13 @@ int main()
       else
       {
         std::cout << "<INVALID COMMAND>\n";
+        skipLine(std::cin);
       }
     }
     catch (const std::exception &e)
     {
       std::cout << "<INVALID COMMAND: " << e.what() << ">\n";
+      skipLine(std::cin);
     }
-    skipLine(std::cin);
   }
 }
