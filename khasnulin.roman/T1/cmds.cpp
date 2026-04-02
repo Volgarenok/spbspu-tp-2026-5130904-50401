@@ -46,6 +46,10 @@ void khasnulin::showLine(std::istream &in, std::ostream &out, NoteMap &notes)
     {
       out << it << "\n";
     }
+    if (notes[name]->lines.empty())
+    {
+      out << "\n";
+    }
   }
   else
   {
