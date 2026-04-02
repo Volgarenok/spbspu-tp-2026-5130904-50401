@@ -51,3 +51,51 @@ BOOST_AUTO_TEST_CASE(test_recreate_after_drop)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(test_line_command)
+using namespace khasnulin;
+
+BOOST_AUTO_TEST_CASE(test_add_line_success)
+{
+  NoteMap notes;
+  const std::string name = "work";
+  notes[name] = std::make_shared< khasnulin::Note >(name);
+
+  std::stringstream in("work \"Buy some milk and bread\"");
+  std::stringstream out;
+
+  BOOST_CHECK_NO_THROW(addLine(in, out, notes));
+
+  BOOST_REQUIRE_EQUAL(notes[name]->lines.size(), 1);
+  BOOST_CHECK_EQUAL(notes[name]->lines[0], "Buy some milk and bread");
+}
+
+BOOST_AUTO_TEST_CASE(test_add_multiple_lines)
+{
+  NoteMap notes;
+  const std::string name = "todo";
+  notes[name] = std::make_shared< khasnulin::Note >(name);
+
+  std::stringstream in1("todo \"First line\"");
+  std::stringstream in2("todo \"Second line\"");
+  std::stringstream out;
+
+  addLine(in1, out, notes);
+  addLine(in2, out, notes);
+
+  BOOST_REQUIRE_EQUAL(notes[name]->lines.size(), 2);
+  BOOST_CHECK_EQUAL(notes[name]->lines[0], "First line");
+  BOOST_CHECK_EQUAL(notes[name]->lines[1], "Second line");
+}
+
+BOOST_AUTO_TEST_CASE(test_add_line_to_non_existent_note_throws)
+{
+  NoteMap notes;
+
+  std::stringstream in("ghost \"Hello?\"");
+  std::stringstream out;
+
+  BOOST_CHECK_THROW(addLine(in, out, notes), std::logic_error);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
