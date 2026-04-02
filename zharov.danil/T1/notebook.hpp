@@ -16,7 +16,6 @@ namespace zharov {
     Book();
     using cmd_t = void(Book::*)(std::istream &, std::ostream &);
     std::unordered_map< std::string, cmd_t > cmds_;
-  private:
     std::vector < std::shared_ptr< Note > > notes_;
     void note(std::istream & in, std::ostream & out);
     void line(std::istream & in, std::ostream & out);
