@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE(test_show_empty_note_throws)
   std::stringstream in("empty");
   std::stringstream out;
 
-  BOOST_CHECK_THROW(showLine(in, out, notes), std::logic_error);
+  BOOST_CHECK_NO_THROW(showLine(in, out, notes));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -210,7 +210,7 @@ BOOST_AUTO_TEST_CASE(test_link_self_reference)
 BOOST_AUTO_TEST_CASE(test_link_non_existent_notes_throws)
 {
   NoteMap notes;
-  notes["A"] = std::make_shared< khasnulin::Note >("A");
+  notes["A"] = std::make_shared< Note >("A");
 
   std::stringstream out;
 
@@ -224,8 +224,8 @@ BOOST_AUTO_TEST_CASE(test_link_non_existent_notes_throws)
 BOOST_AUTO_TEST_CASE(test_link_to_deleted_note)
 {
   NoteMap notes;
-  notes["A"] = std::make_shared< khasnulin::Note >("A");
-  notes["B"] = std::make_shared< khasnulin::Note >("B");
+  notes["A"] = std::make_shared< Note >("A");
+  notes["B"] = std::make_shared< Note >("B");
 
   std::stringstream in1("A B");
   std::stringstream out;
@@ -235,6 +235,77 @@ BOOST_AUTO_TEST_CASE(test_link_to_deleted_note)
 
   BOOST_REQUIRE_EQUAL(notes["A"]->links.size(), 1);
   BOOST_CHECK(notes["A"]->links[0].expired());
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(test_link_command)
+
+using namespace khasnulin;
+
+BOOST_AUTO_TEST_CASE(test_mind_success_order)
+{
+  NoteMap notes;
+  notes["A"] = std::make_shared< khasnulin::Note >("A");
+  notes["B"] = std::make_shared< khasnulin::Note >("B");
+  notes["C"] = std::make_shared< khasnulin::Note >("C");
+
+  std::stringstream in_link1("A C");
+  std::stringstream in_link2("A B");
+  std::stringstream out;
+
+  linkNotes(in_link1, out, notes);
+  linkNotes(in_link2, out, notes);
+
+  std::stringstream in_mind("A");
+  std::stringstream out_mind;
+  BOOST_CHECK_NO_THROW(mindLinks(in_mind, out_mind, notes));
+
+  std::string expected = "C\nB\n";
+  BOOST_CHECK_EQUAL(out_mind.str(), expected);
+}
+
+BOOST_AUTO_TEST_CASE(test_mind_skips_deleted_notes)
+{
+  NoteMap notes;
+  notes["A"] = std::make_shared< khasnulin::Note >("A");
+  notes["B"] = std::make_shared< khasnulin::Note >("B");
+  notes["C"] = std::make_shared< khasnulin::Note >("C");
+
+  std::stringstream out;
+  std::stringstream in_l1("A B");
+  linkNotes(in_l1, out, notes);
+  std::stringstream in_l2("A C");
+  linkNotes(in_l2, out, notes);
+
+  notes.erase("B");
+
+  std::stringstream in_mind("A");
+  std::stringstream out_mind;
+  mindLinks(in_mind, out_mind, notes);
+
+  BOOST_CHECK_EQUAL(out_mind.str(), "C\n");
+}
+
+BOOST_AUTO_TEST_CASE(test_mind_empty_links)
+{
+  NoteMap notes;
+  notes["A"] = std::make_shared< khasnulin::Note >("A");
+
+  std::stringstream in_mind("A");
+  std::stringstream out_mind;
+
+  BOOST_CHECK_NO_THROW(mindLinks(in_mind, out_mind, notes));
+  BOOST_CHECK_EQUAL(out_mind.str(), "");
+}
+
+BOOST_AUTO_TEST_CASE(test_mind_non_existent_source_throws)
+{
+  NoteMap notes;
+  std::stringstream in_mind("Ghost");
+  std::stringstream out_mind;
+
+  BOOST_CHECK_THROW(mindLinks(in_mind, out_mind, notes), std::logic_error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

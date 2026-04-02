@@ -15,6 +15,7 @@ namespace khasnulin
   void showLine(std::istream &in, std::ostream &out, NoteMap &notes);
   void dropNote(std::istream &in, std::ostream &out, NoteMap &notes);
   void linkNotes(std::istream &in, std::ostream &out, NoteMap &notes);
+  void mindLinks(std::istream &in, std::ostream &out, NoteMap &notes);
 }
 
 #endif

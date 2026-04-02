@@ -42,10 +42,6 @@ void khasnulin::showLine(std::istream &in, std::ostream &out, NoteMap &notes)
   in >> name;
   if (notes.find(name) != notes.end())
   {
-    if (notes[name]->lines.empty())
-    {
-      throw std::logic_error("can't show lines. Note doesn't exists any lines");
-    }
     for (const auto &it : notes[name]->lines)
     {
       out << it << "\n";
@@ -91,4 +87,11 @@ void khasnulin::linkNotes(std::istream &in, std::ostream &out, NoteMap &notes)
   notes[noteFrom]->links.push_back(notes[noteTo]);
   notes[noteFrom]->links_names.insert(noteTo);
   out << "successfully inserted link to note " << noteTo << "!\n";
+}
+
+void khasnulin::mindLinks(std::istream &in, std::ostream &out, NoteMap &notes)
+{
+  in.gcount();
+  out.flush();
+  notes.begin();
 }
