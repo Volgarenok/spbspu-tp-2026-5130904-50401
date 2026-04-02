@@ -39,6 +39,7 @@ void malashenko::Notebook::show(std::istream&, std::ostream& out, const std::str
 
       out << text[i] << '\n';
     }
+    out << '\n';
   } catch(std::out_of_range &)
   {
     throw std::logic_error("You don't have note with this name");
@@ -119,6 +120,7 @@ void malashenko::Notebook::mind(std::istream&, std::ostream& out, const std::str
     {
       out << resVec[resVec.size() - 1 - i] << '\n';
     }
+    out << '\n';
   }
   catch(std::out_of_range &)
   {
