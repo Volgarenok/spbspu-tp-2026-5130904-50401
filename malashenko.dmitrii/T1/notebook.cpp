@@ -41,6 +41,9 @@ void malashenko::Notebook::show(std::istream&, std::ostream& out, const std::str
 
         out << text[i] << '\n';
       }
+    } else
+    {
+      out << '\n';
     }
 
   } catch(std::out_of_range &)
@@ -126,8 +129,10 @@ void malashenko::Notebook::mind(std::istream&, std::ostream& out, const std::str
       {
         out << resVec[resVec.size() - 1 - i] << '\n';
       }
+    } else
+    {
+      out << '\n';
     }
-
   }
   catch(std::out_of_range &)
   {
