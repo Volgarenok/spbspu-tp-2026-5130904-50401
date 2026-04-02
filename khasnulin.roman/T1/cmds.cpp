@@ -6,14 +6,13 @@
 #include <stdexcept>
 #include <string>
 
-void khasnulin::addNote(std::istream &in, std::ostream &out, NoteMap &notes)
+void khasnulin::addNote(std::istream &in, std::ostream &, NoteMap &notes)
 {
   std::string name;
   in >> name;
   if (notes.find(name) == notes.end())
   {
     notes[name] = std::make_shared< khasnulin::Note >(name);
-    out << "successfully created " << name << "!\n";
   }
   else
   {
@@ -21,7 +20,7 @@ void khasnulin::addNote(std::istream &in, std::ostream &out, NoteMap &notes)
   }
 }
 
-void khasnulin::addLine(std::istream &in, std::ostream &out, NoteMap &notes)
+void khasnulin::addLine(std::istream &in, std::ostream &, NoteMap &notes)
 {
   std::string name;
   in >> name;
@@ -30,7 +29,6 @@ void khasnulin::addLine(std::istream &in, std::ostream &out, NoteMap &notes)
   if (notes.find(name) != notes.end())
   {
     notes[name]->lines.push_back(line);
-    out << "successfully add line" << "\n";
   }
   else
   {
@@ -55,14 +53,13 @@ void khasnulin::showLine(std::istream &in, std::ostream &out, NoteMap &notes)
   }
 }
 
-void khasnulin::dropNote(std::istream &in, std::ostream &out, NoteMap &notes)
+void khasnulin::dropNote(std::istream &in, std::ostream &, NoteMap &notes)
 {
   std::string name;
   in >> name;
   if (notes.find(name) != notes.end())
   {
     notes.erase(name);
-    out << "successfully droped note " << name << "\n";
   }
   else
   {
@@ -70,7 +67,7 @@ void khasnulin::dropNote(std::istream &in, std::ostream &out, NoteMap &notes)
   }
 }
 
-void khasnulin::linkNotes(std::istream &in, std::ostream &out, NoteMap &notes)
+void khasnulin::linkNotes(std::istream &in, std::ostream &, NoteMap &notes)
 {
   std::string noteFrom;
   std::string noteTo;
@@ -88,7 +85,6 @@ void khasnulin::linkNotes(std::istream &in, std::ostream &out, NoteMap &notes)
 
   notes[noteFrom]->links.push_back(notes[noteTo]);
   notes[noteFrom]->links_names.insert(noteTo);
-  out << "successfully inserted link to note " << noteFrom << "!\n";
 }
 
 void khasnulin::mindLinks(std::istream &in, std::ostream &out, NoteMap &notes)
@@ -130,7 +126,7 @@ void khasnulin::expiredLinks(std::istream &in, std::ostream &out, NoteMap &notes
   out << count << "\n";
 }
 
-void khasnulin::refreshLinks(std::istream &in, std::ostream &out, NoteMap &notes)
+void khasnulin::refreshLinks(std::istream &in, std::ostream &, NoteMap &notes)
 {
   std::string name;
   in >> name;
@@ -157,10 +153,9 @@ void khasnulin::refreshLinks(std::istream &in, std::ostream &out, NoteMap &notes
     }
   }
   notes[name]->links_names = new_names;
-  out << "successfully refreshed!\n";
 }
 
-void khasnulin::haltLink(std::istream &in, std::ostream &out, NoteMap &notes)
+void khasnulin::haltLink(std::istream &in, std::ostream &, NoteMap &notes)
 {
   std::string noteFrom;
   std::string noteTo;
@@ -188,5 +183,4 @@ void khasnulin::haltLink(std::istream &in, std::ostream &out, NoteMap &notes)
   }
 
   notes[noteFrom]->links_names.erase(noteTo);
-  out << "note link successfully deleted\n";
 }
