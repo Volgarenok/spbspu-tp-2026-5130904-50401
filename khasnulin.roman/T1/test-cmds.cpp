@@ -99,3 +99,37 @@ BOOST_AUTO_TEST_CASE(test_add_line_to_non_existent_note_throws)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(test_show_command)
+using namespace khasnulin;
+
+BOOST_AUTO_TEST_CASE(test_show_output_format)
+{
+  NoteMap notes;
+  const std::string name = "lectures";
+  auto note = std::make_shared< khasnulin::Note >(name);
+  note->lines.push_back("Math: 2+2=4");
+  note->lines.push_back("Physics: F=ma");
+  notes[name] = note;
+
+  std::stringstream in("lectures");
+  std::stringstream out;
+
+  BOOST_CHECK_NO_THROW(showLine(in, out, notes));
+
+  std::string expected = "Math: 2+2=4\nPhysics: F=ma\n";
+  BOOST_CHECK_EQUAL(out.str(), expected);
+}
+
+BOOST_AUTO_TEST_CASE(test_show_empty_note_throws)
+{
+  NoteMap notes;
+  notes["empty"] = std::make_shared< khasnulin::Note >("empty");
+
+  std::stringstream in("empty");
+  std::stringstream out;
+
+  BOOST_CHECK_THROW(showLine(in, out, notes), std::logic_error);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
