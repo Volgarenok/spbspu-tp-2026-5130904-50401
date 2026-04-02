@@ -71,3 +71,11 @@ void khasnulin::dropNote(std::istream &in, std::ostream &out, NoteMap &notes)
     throw std::logic_error("can't drop note. Note with such name doesn't exists");
   }
 }
+
+void khasnulin::linkNotes(std::istream &in, std::ostream &out, NoteMap &notes)
+{
+  std::string name;
+  in >> name;
+  out << name;
+  notes.begin();
+}

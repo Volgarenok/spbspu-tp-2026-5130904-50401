@@ -2,6 +2,7 @@
 #define CMDS_HPP
 
 #include "Note.hpp"
+#include <ostream>
 #include <unordered_map>
 
 namespace khasnulin
@@ -13,6 +14,7 @@ namespace khasnulin
   void addLine(std::istream &in, std::ostream &out, NoteMap &notes);
   void showLine(std::istream &in, std::ostream &out, NoteMap &notes);
   void dropNote(std::istream &in, std::ostream &out, NoteMap &notes);
+  void linkNotes(std::istream &in, std::ostream &out, NoteMap &notes);
 }
 
 #endif

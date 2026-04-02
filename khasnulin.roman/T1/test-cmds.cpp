@@ -161,3 +161,80 @@ BOOST_AUTO_TEST_CASE(test_drop_non_existent_throws)
   BOOST_CHECK_THROW(dropNote(in, out, notes), std::logic_error);
 }
 BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(test_link_command)
+using namespace khasnulin;
+BOOST_AUTO_TEST_CASE(test_link_success)
+{
+  NoteMap notes;
+  notes["A"] = std::make_shared< Note >("A");
+  notes["B"] = std::make_shared< Note >("B");
+
+  std::stringstream in("A B");
+  std::stringstream out;
+
+  BOOST_CHECK_NO_THROW(linkNotes(in, out, notes));
+
+  BOOST_REQUIRE_EQUAL(notes["A"]->links.size(), 1);
+  BOOST_CHECK_EQUAL(notes["A"]->links_names.count("B"), 1);
+
+  auto linked_note = notes["A"]->links[0].lock();
+  BOOST_REQUIRE(linked_note != nullptr);
+  BOOST_CHECK_EQUAL(linked_note->name, "B");
+}
+BOOST_AUTO_TEST_CASE(test_link_duplicate_throws)
+{
+  NoteMap notes;
+  notes["A"] = std::make_shared< Note >("A");
+  notes["B"] = std::make_shared< Note >("B");
+
+  std::stringstream in1("A B");
+  std::stringstream out;
+  linkNotes(in1, out, notes);
+
+  std::stringstream in2("A B");
+  BOOST_CHECK_THROW(linkNotes(in2, out, notes), std::logic_error);
+}
+
+BOOST_AUTO_TEST_CASE(test_link_self_reference)
+{
+  NoteMap notes;
+  notes["A"] = std::make_shared< Note >("A");
+
+  std::stringstream in("A A");
+  std::stringstream out;
+  BOOST_CHECK_NO_THROW(linkNotes(in, out, notes));
+  BOOST_CHECK_EQUAL(notes["A"]->links.size(), 1);
+}
+
+BOOST_AUTO_TEST_CASE(test_link_non_existent_notes_throws)
+{
+  NoteMap notes;
+  notes["A"] = std::make_shared< khasnulin::Note >("A");
+
+  std::stringstream out;
+
+  std::stringstream in1("Ghost B");
+  BOOST_CHECK_THROW(linkNotes(in1, out, notes), std::logic_error);
+
+  std::stringstream in2("A Ghost");
+  BOOST_CHECK_THROW(linkNotes(in2, out, notes), std::logic_error);
+}
+
+BOOST_AUTO_TEST_CASE(test_link_to_deleted_note)
+{
+  NoteMap notes;
+  notes["A"] = std::make_shared< khasnulin::Note >("A");
+  notes["B"] = std::make_shared< khasnulin::Note >("B");
+
+  std::stringstream in1("A B");
+  std::stringstream out;
+  linkNotes(in1, out, notes);
+
+  notes.erase("B");
+
+  BOOST_REQUIRE_EQUAL(notes["A"]->links.size(), 1);
+  BOOST_CHECK(notes["A"]->links[0].expired());
+}
+
+BOOST_AUTO_TEST_SUITE_END()
