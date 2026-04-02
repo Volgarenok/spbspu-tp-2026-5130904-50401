@@ -12,7 +12,7 @@ namespace chernov {
     Note(std::string name);
     std::string getName() const noexcept;
     std::string getText() const noexcept;
-    void addLineToText(std::string line);
+    void addLine(std::string line);
   private:
     std::string name_;
     std::string text_;
@@ -76,7 +76,7 @@ std::string chernov::Note::getText() const noexcept
   return text_;
 }
 
-void chernov::Note::addLineToText(std::string line)
+void chernov::Note::addLine(std::string line)
 {
   text_ += "\n" + line;
 }
@@ -92,7 +92,7 @@ void chernov::NoteBook::createNote(std::string name)
 void chernov::NoteBook::addLineToNote(std::string name, std::string line)
 {
   try {
-    notes_.at(name)->addLineToText(line);
+    notes_.at(name)->addLine(line);
   } catch (const std::out_of_range & e) {
     throw std::logic_error("note not found");
   }
