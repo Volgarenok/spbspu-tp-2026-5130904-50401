@@ -470,3 +470,73 @@ BOOST_AUTO_TEST_CASE(test_refresh_non_existent_source_throws)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(test_halt_command)
+
+using namespace khasnulin;
+
+BOOST_AUTO_TEST_CASE(test_halt_success)
+{
+  NoteMap notes;
+  notes["A"] = std::make_shared< khasnulin::Note >("A");
+  notes["B"] = std::make_shared< khasnulin::Note >("B");
+  notes["C"] = std::make_shared< khasnulin::Note >("C");
+
+  std::stringstream out;
+  std::stringstream in_l1("A B");
+  linkNotes(in_l1, out, notes);
+  std::stringstream in_l2("A C");
+  linkNotes(in_l2, out, notes);
+
+  std::stringstream in_halt("A B");
+  BOOST_CHECK_NO_THROW(haltLink(in_halt, out, notes));
+
+  BOOST_REQUIRE_EQUAL(notes["A"]->links.size(), 1);
+  BOOST_CHECK_EQUAL(notes["A"]->links_names.count("B"), 0);
+  BOOST_CHECK_EQUAL(notes["A"]->links_names.count("C"), 1);
+
+  auto remaining = notes["A"]->links[0].lock();
+  BOOST_CHECK_EQUAL(remaining->name, "C");
+}
+
+BOOST_AUTO_TEST_CASE(test_halt_non_existent_link_throws)
+{
+  NoteMap notes;
+  notes["A"] = std::make_shared< khasnulin::Note >("A");
+  notes["B"] = std::make_shared< khasnulin::Note >("B");
+
+  std::stringstream in_halt("A B");
+  std::stringstream out;
+
+  BOOST_CHECK_THROW(haltLink(in_halt, out, notes), std::logic_error);
+}
+
+BOOST_AUTO_TEST_CASE(test_halt_after_target_dropped)
+{
+  NoteMap notes;
+  notes["A"] = std::make_shared< khasnulin::Note >("A");
+  notes["B"] = std::make_shared< khasnulin::Note >("B");
+
+  std::stringstream out;
+  std::stringstream in_l("A B");
+  linkNotes(in_l, out, notes);
+
+  notes.erase("B");
+
+  std::stringstream in_halt("A B");
+  BOOST_CHECK_NO_THROW(haltLink(in_halt, out, notes));
+
+  BOOST_CHECK_EQUAL(notes["A"]->links_names.count("B"), 0);
+  BOOST_CHECK(notes["A"]->links.empty());
+}
+
+BOOST_AUTO_TEST_CASE(test_halt_non_existent_source_throws)
+{
+  NoteMap notes;
+  std::stringstream in_exp("Ghost");
+  std::stringstream out_exp;
+
+  BOOST_CHECK_THROW(haltLink(in_exp, out_exp, notes), std::logic_error);
+}
+
+BOOST_AUTO_TEST_SUITE_END()

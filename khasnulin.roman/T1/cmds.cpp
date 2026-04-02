@@ -88,7 +88,7 @@ void khasnulin::linkNotes(std::istream &in, std::ostream &out, NoteMap &notes)
 
   notes[noteFrom]->links.push_back(notes[noteTo]);
   notes[noteFrom]->links_names.insert(noteTo);
-  out << "successfully inserted link to note " << noteTo << "!\n";
+  out << "successfully inserted link to note " << noteFrom << "!\n";
 }
 
 void khasnulin::mindLinks(std::istream &in, std::ostream &out, NoteMap &notes)
@@ -158,4 +158,11 @@ void khasnulin::refreshLinks(std::istream &in, std::ostream &out, NoteMap &notes
   }
   notes[name]->links_names = new_names;
   out << "successfully refreshed!\n";
+}
+
+void khasnulin::haltLink(std::istream &in, std::ostream &out, NoteMap &notes)
+{
+  in.gcount();
+  out.flush();
+  notes.begin();
 }
