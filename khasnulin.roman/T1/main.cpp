@@ -1,6 +1,7 @@
 #include <iostream>
 #include <limits>
 #include <string>
+#include <unordered_map>
 
 #include "cmds.hpp"
 
@@ -25,9 +26,13 @@ int main()
   cmds["refresh"] = refreshLinks;
   cmds["halt"] = haltLink;
 
+  std::unordered_set< std::string > outputCmds{"show", "mind", "expired"};
+
   NoteMap notes;
 
   std::string cmd;
+
+  bool outputDone = false;
   while (std::cin >> cmd)
   {
     try
@@ -35,19 +40,27 @@ int main()
       if (cmds.find(cmd) != cmds.end())
       {
         cmds[cmd](std::cin, std::cout, notes);
+        if (outputCmds.find(cmd) != outputCmds.end())
+        {
+          outputDone = true;
+        }
       }
-
       else
       {
         std::cout << "<INVALID COMMAND>\n";
+        outputDone = true;
         skipLine(std::cin);
       }
     }
     catch (const std::exception &e)
     {
       std::cout << "<INVALID COMMAND>\n";
+      outputDone = true;
       skipLine(std::cin);
     }
   }
-  std::cout << "\n";
+  if (!outputDone)
+  {
+    std::cout << "\n";
+  }
 }
