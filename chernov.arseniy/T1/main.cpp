@@ -23,12 +23,14 @@ namespace chernov {
   public:
     void createNote(std::string name);
     void addLineToNote(std::string name, std::string line);
+    void showNote(std::string name, std::ostream & output);
   private:
     std::unordered_map< std::string, std::shared_ptr< Note > > notes_;
   };
 
   void cmdNote(std::istream & input, std::ostream & output, NoteBook & notebook);
   void cmdLine(std::istream & input, std::ostream & output, NoteBook & notebook);
+  void cmdShow(std::istream & input, std::ostream & output, NoteBook & notebook);
 }
 
 int main()
@@ -43,6 +45,7 @@ int main()
   std::unordered_map< std::string, cmd_t > cmds;
   cmds["note"] = cmdNote;
   cmds["line"] = cmdLine;
+  cmds["show"] = cmdShow;
 
   std::string cmd;
   while (input >> cmd) {
@@ -78,7 +81,10 @@ std::string chernov::Note::getText() const noexcept
 
 void chernov::Note::addLine(std::string line)
 {
-  text_ += "\n" + line;
+  if (!text_.empty()) {
+    text_ += "\n";
+  }
+  text_ += line;
 }
 
 void chernov::NoteBook::createNote(std::string name)
@@ -98,6 +104,18 @@ void chernov::NoteBook::addLineToNote(std::string name, std::string line)
   }
 }
 
+void chernov::NoteBook::showNote(std::string name, std::ostream & output)
+{
+  std::string text;
+  try {
+    text = notes_.at(name)->getText();
+  } catch (const std::out_of_range & e) {
+    throw std::logic_error("note not found");
+  }
+
+  output << text << "\n";
+}
+
 void chernov::cmdNote(std::istream & input, std::ostream &, NoteBook & notebook)
 {
   std::string name;
@@ -114,4 +132,11 @@ void chernov::cmdLine(std::istream & input, std::ostream &, NoteBook & notebook)
   input >> std::quoted(line);
 
   notebook.addLineToNote(name, line);
+}
+
+void chernov::cmdShow(std::istream & input, std::ostream & output, NoteBook & notebook)
+{
+  std::string name;
+  input >> name;
+  notebook.showNote(name, output);
 }
