@@ -189,7 +189,7 @@ namespace goltsov
     {
       if (from->links[i].lock() == to)
       {
-        return;
+        throw std::logic_error("<INVALID COMMAND>\n");
       }
     }
     from->links.push_back(to);
