@@ -107,3 +107,10 @@ void khasnulin::mindLinks(std::istream &in, std::ostream &out, NoteMap &notes)
     }
   }
 }
+
+void khasnulin::expiredLinks(std::istream &in, std::ostream &out, NoteMap &notes)
+{
+  in.gcount();
+  out.flush();
+  notes.begin();
+}
