@@ -17,6 +17,7 @@ namespace khasnulin
   void linkNotes(std::istream &in, std::ostream &out, NoteMap &notes);
   void mindLinks(std::istream &in, std::ostream &out, NoteMap &notes);
   void expiredLinks(std::istream &in, std::ostream &out, NoteMap &notes);
+  void refreshLinks(std::istream &in, std::ostream &out, NoteMap &notes);
 }
 
 #endif

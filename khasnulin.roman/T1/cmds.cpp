@@ -127,3 +127,10 @@ void khasnulin::expiredLinks(std::istream &in, std::ostream &out, NoteMap &notes
   }
   out << count << "\n";
 }
+
+void khasnulin::refreshLinks(std::istream &in, std::ostream &out, NoteMap &notes)
+{
+  in.gcount();
+  out.flush();
+  notes.begin();
+}
