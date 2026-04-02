@@ -11,7 +11,7 @@ void khasnulin::addNote(std::istream &in, std::ostream &out, NoteMap &notes)
   if (notes.find(name) == notes.end())
   {
     notes[name] = std::make_shared< khasnulin::Note >(name);
-    out << "succefully created " << name << "!\n";
+    out << "successfully created " << name << "!\n";
   }
   else
   {
@@ -64,7 +64,7 @@ void khasnulin::dropNote(std::istream &in, std::ostream &out, NoteMap &notes)
   if (notes.find(name) != notes.end())
   {
     notes.erase(name);
-    out << "succefully droped note " << name << "\n";
+    out << "successfully droped note " << name << "\n";
   }
   else
   {
@@ -74,8 +74,21 @@ void khasnulin::dropNote(std::istream &in, std::ostream &out, NoteMap &notes)
 
 void khasnulin::linkNotes(std::istream &in, std::ostream &out, NoteMap &notes)
 {
-  std::string name;
-  in >> name;
-  out << name;
-  notes.begin();
+  std::string noteFrom;
+  std::string noteTo;
+  in >> noteFrom >> noteTo;
+
+  if (notes.find(noteTo) == notes.end() || notes.find(noteFrom) == notes.end())
+  {
+    throw std::logic_error("can't link notes: notes with such names doesn't exists");
+  }
+
+  if (notes[noteFrom]->links_names.count(noteTo) != 0)
+  {
+    throw std::logic_error("can't link notes: linking note already exists in links list");
+  }
+
+  notes[noteFrom]->links.push_back(notes[noteTo]);
+  notes[noteFrom]->links_names.insert(noteTo);
+  out << "successfully inserted link to note " << noteTo << "!\n";
 }
