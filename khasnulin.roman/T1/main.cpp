@@ -73,6 +73,21 @@ void showLine(std::istream &in, std::ostream &out, NoteMap &notes)
   }
 }
 
+void dropNote(std::istream &in, std::ostream &, NoteMap &notes)
+{
+  std::string name;
+  in >> name;
+  if (notes.find(name) != notes.end())
+  {
+    notes.erase(name);
+    std::cout << "succefully droped note " << name << "\n";
+  }
+  else
+  {
+    throw std::logic_error("can't drop note. Note with such name doesn't exists");
+  }
+}
+
 int main()
 {
   using Cmd = void (*)(std::istream &, std::ostream &, NoteMap &);
@@ -82,6 +97,7 @@ int main()
   cmds["note"] = addNote;
   cmds["line"] = addLine;
   cmds["show"] = showLine;
+  cmds["drop"] = dropNote;
 
   NoteMap notes;
 
