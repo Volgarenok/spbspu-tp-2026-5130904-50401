@@ -37,7 +37,7 @@ void zharov::Book::note(std::istream & in, std::ostream &)
   std::string name;
   in >> name;
   if (isInNotes(name)) {
-    return;
+    throw std::logic_error("Note already created");
   }
   std::shared_ptr< Note > new_note = std::make_shared< Note >(name);
   notes_.push_back(new_note);
@@ -62,10 +62,10 @@ void zharov::Book::show(std::istream & in, std::ostream & out)
   in >> name;
   size_t ind = 0;
   if (isInNotes(ind, name)) {
-    if (notes_.at(ind)->text_ == "") {
+    out << notes_.at(ind)->text_;
+    if (notes_.at(ind)->text_.empty()) {
       out << "\n";
     }
-    out << notes_.at(ind)->text_;
     return;
   }
   throw std::logic_error("Note not found");
@@ -108,10 +108,15 @@ void zharov::Book::mind(std::istream & in, std::ostream & out)
   if (!isInNotes(ind, name)) {
     throw std::logic_error("Note not found");
   }
+  size_t count = 0;
   for (size_t i = 0; i < notes_.at(ind)->links_.size(); ++i) {
     if (auto lnk = notes_.at(ind)->links_.at(i).lock()) {
       out << lnk->name_ << '\n';
+      ++count;
     }
+  }
+  if (count == 0) {
+    out << "\n";
   }
 }
 
