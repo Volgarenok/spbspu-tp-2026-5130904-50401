@@ -20,7 +20,7 @@ using unordered_map_of_notes = std::unordered_map< std::string, std::shared_ptr<
 
 void hello(std::istream&, std::ostream& out, unordered_map_of_notes&)
 {
-  out  << "Hello, World!\n";
+  out  << "Hello World!\n";
 }
 
 void makeNote(std::istream& in, std::ostream&, unordered_map_of_notes& notes)
