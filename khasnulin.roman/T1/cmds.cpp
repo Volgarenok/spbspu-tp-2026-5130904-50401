@@ -1,8 +1,10 @@
 #include "cmds.hpp"
 
 #include <iomanip>
+#include <memory>
 #include <ostream>
 #include <stdexcept>
+#include <string>
 
 void khasnulin::addNote(std::istream &in, std::ostream &out, NoteMap &notes)
 {
@@ -130,7 +132,30 @@ void khasnulin::expiredLinks(std::istream &in, std::ostream &out, NoteMap &notes
 
 void khasnulin::refreshLinks(std::istream &in, std::ostream &out, NoteMap &notes)
 {
-  in.gcount();
-  out.flush();
-  notes.begin();
+  std::string name;
+  in >> name;
+  if (notes.find(name) == notes.end())
+  {
+    throw std::logic_error("can't refresh links: note with such name doesn't exists");
+  }
+
+  auto it = notes[name]->links.begin();
+
+  std::unordered_set< std::string > new_names;
+
+  while (it != notes[name]->links.end())
+  {
+    std::weak_ptr< Note > &note_ptr = *it;
+    if (note_ptr.expired())
+    {
+      it = notes[name]->links.erase(it);
+    }
+    else
+    {
+      new_names.insert(note_ptr.lock()->name);
+      ++it;
+    }
+  }
+  notes[name]->links_names = new_names;
+  out << "successfully refreshed!\n";
 }
