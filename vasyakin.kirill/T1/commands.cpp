@@ -34,7 +34,7 @@ namespace vasyakin
     it->second->noteLine(txt);
   }
 
-  void show(std::istream& in, std::ostream& out, NotesMap& notes)
+  void show(std::istream& in, std::ostream&, NotesMap& notes)
   {
     std::string name;
     if (!(in >> name))
@@ -98,7 +98,7 @@ namespace vasyakin
     from_it->second->noteHalt(to_it->second);
   }
 
-  void mind(std::istream& in, std::ostream& out, NotesMap& notes)
+  void mind(std::istream& in, std::ostream&, NotesMap& notes)
   {
     std::string name;
     if (!(in >> name))
