@@ -12,10 +12,11 @@ namespace vasyakin
       throw std::logic_error("");
     }
 
-    if (notes.find(name) == notes.end())
+    if (notes.find(name) != notes.end())
     {
-      notes[name] = std::make_shared< vasyakin::Note >(name);
+      throw std::logic_error("");
     }
+    notes[name] = std::make_shared< vasyakin::Note >(name);
   }
 
   void line(std::istream& in, std::ostream&, NotesMap& notes)

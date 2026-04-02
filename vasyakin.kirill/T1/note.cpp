@@ -29,7 +29,7 @@ namespace vasyakin
       {
         if (shr_ptr1 && shr_ptr2 && shr_ptr1 == shr_ptr2)
         {
-          return;
+          throw std::logic_error("");
         }
       }
     }
@@ -38,6 +38,11 @@ namespace vasyakin
 
   void Note::noteHalt(const std::shared_ptr< Note >& target)
   {
+    if (target.get() == this)
+    {
+      throw std::logic_error("");
+    }
+
     auto it = links_.begin();
     while (it != links_.end())
     {
