@@ -96,7 +96,7 @@ void zharov::Book::link(std::istream & in, std::ostream &)
       throw std::logic_error("Already linked");
     }
   }
-  notes_[ind_from]->links_.push_back(notes_[ind_to]);
+  notes_.at(ind_from)->links_.push_back(notes_.at(ind_to));
 }
 
 void zharov::Book::mind(std::istream & in, std::ostream & out)
@@ -114,11 +114,62 @@ void zharov::Book::mind(std::istream & in, std::ostream & out)
   }
 }
 
-void zharov::Book::halt(std::istream &, std::ostream &)
-{}
+void zharov::Book::halt(std::istream & in, std::ostream &)
+{
+  std::string name_from;
+  std::string name_to;
+  in >> name_from >> name_to;
+  size_t ind_from = 0;
+  size_t ind_to = 0;
+  if (!(isInNotes(ind_from, name_from) && isInNotes(ind_to, name_to))) {
+    throw std::logic_error("Note not found");
+  }
+  for (size_t i = 0; i < notes_.at(ind_from)->links_.size(); ++i) {
+    if (notes_.at(ind_from)->links_.at(i).lock() == notes_.at(ind_to)) {
+      notes_.at(ind_from)->links_.erase(notes_.at(ind_from)->links_.begin() + i);
+      return;
+    }
+  }
+  throw std::logic_error("Link not found");
+}
 
-void zharov::Book::expired(std::istream &, std::ostream &)
-{}
+void zharov::Book::expired(std::istream & in, std::ostream & out)
+{
+  std::string name;
+  in >> name;
+  size_t ind = 0;
+  if (!isInNotes(ind, name)) {
+    throw std::logic_error("Note not found");
+  }
+  size_t count = 0;
+  for (size_t i = 0; i < notes_.at(ind)->links_.size(); ++i) {
+    if (!notes_.at(ind)->links_.at(i).lock()) {
+      ++count;
+    }
+  }
+  out << count << '\n';
+}
 
-void zharov::Book::refresh(std::istream &, std::ostream &)
-{}
+void zharov::Book::refresh(std::istream & in, std::ostream &)
+{
+  std::string name;
+  in >> name;
+  size_t ind = 0;
+  if (!isInNotes(ind, name)) {
+    throw std::logic_error("Note not found");
+  }
+  size_t count = 0;
+  for (size_t i = 0; i < notes_.at(ind)->links_.size(); ++i) {
+    if (!notes_.at(ind)->links_.at(i).lock()) {
+      ++count;
+    }
+  }
+  for (size_t j = 0; j < count; ++j) {
+    for (size_t i = 0; i < notes_.at(ind)->links_.size(); ++i) {
+      if (!notes_.at(ind)->links_.at(i).lock()) {
+        notes_.at(ind)->links_.erase(notes_.at(ind)->links_.begin() + i);
+        break;
+      }
+    }
+  }
+}
