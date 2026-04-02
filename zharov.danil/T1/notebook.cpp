@@ -53,9 +53,7 @@ void zharov::Book::line(std::istream & in, std::ostream &)
     notes_.at(ind)->text_.append(new_line + '\n');
     return;
   }
-  std::shared_ptr< Note > new_note = std::make_shared< Note >(name);
-  new_note->text_ = new_line + '\n';
-  notes_.push_back(new_note);
+  throw std::logic_error("Note not found");
 }
 
 void zharov::Book::show(std::istream & in, std::ostream & out)
@@ -64,6 +62,9 @@ void zharov::Book::show(std::istream & in, std::ostream & out)
   in >> name;
   size_t ind = 0;
   if (isInNotes(ind, name)) {
+    if (notes_.at(ind)->text_ == "") {
+      out << "\n";
+    }
     out << notes_.at(ind)->text_;
     return;
   }
