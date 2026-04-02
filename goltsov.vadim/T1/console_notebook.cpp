@@ -6,15 +6,15 @@ namespace goltsov
 {
   Book::Book()
   {
-    funcs_only_word["note"] = &Book::note;
-    funcs_only_word["show"] = &Book::show;
-    funcs_only_word["drop"] = &Book::drop;
-    funcs_only_word["mind"] = &Book::mind;
-    funcs_only_word["expired"] = &Book::expired;
-    funcs_only_word["refresh"] = &Book::refresh;
-    funcs_two_link["link"] = &Book::link;
-    funcs_two_link["halt"] = &Book::halt;
-    funcs_two_words["line"] = &Book::line;
+    funcs_only_word["note"] = & Book::note;
+    funcs_only_word["show"] = & Book::show;
+    funcs_only_word["drop"] = & Book::drop;
+    funcs_only_word["mind"] = & Book::mind;
+    funcs_only_word["expired"] = & Book::expired;
+    funcs_only_word["refresh"] = & Book::refresh;
+    funcs_two_link["link"] = & Book::link;
+    funcs_two_link["halt"] = & Book::halt;
+    funcs_two_words["line"] = & Book::line;
   }
 
   void Book::doAction(std::string& name_func, std::string& note_name)
