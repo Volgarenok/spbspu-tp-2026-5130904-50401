@@ -18,15 +18,15 @@ namespace zharov {
     std::unordered_map< std::string, cmd_t > cmds_;
   private:
     std::vector < std::shared_ptr< Note > > notes_;
-    void note (std::istream & in, std::ostream & out);
-    void show (std::istream & in, std::ostream & out);
-    void drop (std::istream & in, std::ostream & out);
-    void mind (std::istream & in, std::ostream & out);
-    void expired (std::istream & in, std::ostream & out);
-    void refresh (std::istream & in, std::ostream & out);
-    void link (std::istream & in, std::ostream & out);
-    void halt (std::istream & in, std::ostream & out);
-    void line (std::istream & in, std::ostream & out);
+    void note(std::istream & in, std::ostream & out);
+    void line(std::istream & in, std::ostream & out);
+    void show(std::istream & in, std::ostream & out);
+    void drop(std::istream & in, std::ostream & out);
+    void link(std::istream & in, std::ostream & out);
+    void mind(std::istream & in, std::ostream & out);
+    void halt(std::istream & in, std::ostream & out);
+    void expired(std::istream & in, std::ostream & out);
+    void refresh(std::istream & in, std::ostream & out);
   };
 
 }
