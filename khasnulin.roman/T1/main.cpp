@@ -45,7 +45,7 @@ int main()
     }
     catch (const std::exception &e)
     {
-      std::cout << "<INVALID COMMAND: " << e.what() << ">\n";
+      std::cout << "<INVALID COMMAND>\n";
       skipLine(std::cin);
     }
   }
