@@ -91,7 +91,19 @@ void khasnulin::linkNotes(std::istream &in, std::ostream &out, NoteMap &notes)
 
 void khasnulin::mindLinks(std::istream &in, std::ostream &out, NoteMap &notes)
 {
-  in.gcount();
-  out.flush();
-  notes.begin();
+  std::string name;
+  in >> name;
+
+  if (notes.find(name) == notes.end())
+  {
+    throw std::logic_error("can't mind links: note with such name doesn't exists");
+  }
+
+  for (const auto &note_ptr : notes[name]->links)
+  {
+    if (!note_ptr.expired())
+    {
+      out << note_ptr.lock()->name << "\n";
+    }
+  }
 }
