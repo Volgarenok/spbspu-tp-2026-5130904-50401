@@ -83,6 +83,9 @@ void chernov::Note::addLineToText(std::string line)
 
 void chernov::NoteBook::createNote(std::string name)
 {
+  if (notes_.count(name)) {
+    throw std::logic_error("note already exists");
+  }
   notes_[name] = std::make_shared< Note >(name);
 }
 
@@ -91,10 +94,9 @@ void chernov::NoteBook::addLineToNote(std::string name, std::string line)
   try {
     notes_.at(name)->addLineToText(line);
   } catch (const std::out_of_range & e) {
-    throw std::logic_error("a note with this name was not found");
+    throw std::logic_error("note not found");
   }
 }
-
 
 void chernov::cmdNote(std::istream & input, std::ostream &, NoteBook & notebook)
 {
