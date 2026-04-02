@@ -110,7 +110,20 @@ void khasnulin::mindLinks(std::istream &in, std::ostream &out, NoteMap &notes)
 
 void khasnulin::expiredLinks(std::istream &in, std::ostream &out, NoteMap &notes)
 {
-  in.gcount();
-  out.flush();
-  notes.begin();
+  std::string name;
+  in >> name;
+  if (notes.find(name) == notes.end())
+  {
+    throw std::logic_error("can't count expired links: note with such name doesn't exists");
+  }
+
+  size_t count = 0;
+  for (const auto &note_ptr : notes[name]->links)
+  {
+    if (note_ptr.expired())
+    {
+      ++count;
+    }
+  }
+  out << count << "\n";
 }
