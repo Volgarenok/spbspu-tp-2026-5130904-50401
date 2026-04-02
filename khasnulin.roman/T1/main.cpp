@@ -19,6 +19,11 @@ int main()
   cmds["line"] = addLine;
   cmds["show"] = showLine;
   cmds["drop"] = dropNote;
+  cmds["link"] = linkNotes;
+  cmds["mind"] = mindLinks;
+  cmds["expired"] = expiredLinks;
+  cmds["refresh"] = refreshLinks;
+  cmds["halt"] = haltLink;
 
   NoteMap notes;
 
