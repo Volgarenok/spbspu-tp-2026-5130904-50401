@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE(test_add_new_note)
 BOOST_AUTO_TEST_CASE(test_add_duplicate_note_throws)
 {
   NoteMap notes;
-  notes["existing"] = std::make_shared< khasnulin::Note >("existing");
+  notes["existing"] = std::make_shared< Note >("existing");
 
   std::stringstream in("existing");
   std::stringstream out;
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(test_add_line_success)
 {
   NoteMap notes;
   const std::string name = "work";
-  notes[name] = std::make_shared< khasnulin::Note >(name);
+  notes[name] = std::make_shared< Note >(name);
 
   std::stringstream in("work \"Buy some milk and bread\"");
   std::stringstream out;
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(test_add_multiple_lines)
 {
   NoteMap notes;
   const std::string name = "todo";
-  notes[name] = std::make_shared< khasnulin::Note >(name);
+  notes[name] = std::make_shared< Note >(name);
 
   std::stringstream in1("todo \"First line\"");
   std::stringstream in2("todo \"Second line\"");
@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE(test_show_output_format)
 {
   NoteMap notes;
   const std::string name = "lectures";
-  auto note = std::make_shared< khasnulin::Note >(name);
+  auto note = std::make_shared< Note >(name);
   note->lines.push_back("Math: 2+2=4");
   note->lines.push_back("Physics: F=ma");
   notes[name] = note;
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE(test_show_output_format)
 BOOST_AUTO_TEST_CASE(test_show_empty_note_throws)
 {
   NoteMap notes;
-  notes["empty"] = std::make_shared< khasnulin::Note >("empty");
+  notes["empty"] = std::make_shared< Note >("empty");
 
   std::stringstream in("empty");
   std::stringstream out;
@@ -132,4 +132,32 @@ BOOST_AUTO_TEST_CASE(test_show_empty_note_throws)
   BOOST_CHECK_THROW(showLine(in, out, notes), std::logic_error);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(test_drop_command)
+using namespace khasnulin;
+
+BOOST_AUTO_TEST_CASE(test_drop_success)
+{
+  NoteMap notes;
+  notes["to_delete"] = std::make_shared< Note >("to_delete");
+
+  std::stringstream in("to_delete");
+  std::stringstream out;
+
+  BOOST_CHECK_EQUAL(notes.size(), 1);
+  BOOST_CHECK_NO_THROW(dropNote(in, out, notes));
+
+  BOOST_CHECK_EQUAL(notes.size(), 0);
+  BOOST_CHECK(notes.find("to_delete") == notes.end());
+}
+
+BOOST_AUTO_TEST_CASE(test_drop_non_existent_throws)
+{
+  NoteMap notes;
+  std::stringstream in("void");
+  std::stringstream out;
+
+  BOOST_CHECK_THROW(dropNote(in, out, notes), std::logic_error);
+}
 BOOST_AUTO_TEST_SUITE_END()
