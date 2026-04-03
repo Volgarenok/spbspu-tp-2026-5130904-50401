@@ -99,7 +99,7 @@ int main()
     }
     catch (const std::logic_error & e)
     {
-      std::cout << "<INVALID COMMAND>" << "\n ";
+      std::cout << "<INVALID COMMAND>";
     }
   }
   if (!std::cin.eof())
