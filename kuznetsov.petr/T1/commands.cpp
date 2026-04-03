@@ -89,14 +89,16 @@ namespace kuznetsov {
       throw std::logic_error("this note does not exist");
     }
     const std::vector<std::weak_ptr<Record> >& links = db.at(name)->refs_;
-    if (links.empty()) {
-      out << '\n';
-      return;
-    }
+    size_t count = 0;
     for (const std::weak_ptr<Record>& link : links) {
       if (const std::shared_ptr<Record> spt = link.lock()) {
         out << spt->name_ << '\n';
+        count++;
       }
+    }
+    if (count == 0)
+    {
+      out << '\n';
     }
   }
 
