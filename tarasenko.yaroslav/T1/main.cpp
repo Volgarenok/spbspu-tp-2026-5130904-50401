@@ -61,6 +61,10 @@ void showNote(std::istream& in, std::ostream& out, unordered_map_of_notes& notes
   {
     out << note->data[i] << "\n";
   }
+  if (note->data.empty())
+  {
+    out << "\n";
+  }
 }
 
 void dropNote(std::istream& in, std::ostream&, unordered_map_of_notes& notes)
