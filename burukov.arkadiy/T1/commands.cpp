@@ -114,4 +114,63 @@ namespace burukov
 
     it->second->showLinks();
   }
+
+  void halt(std::istream& in, std::ostream&, NotesMap& notes)
+  {
+    std::string fromName;
+    std::string toName;
+
+    if (!(in >> fromName >> toName))
+    {
+      throw std::logic_error("");
+    }
+
+    auto fromIt = notes.find(fromName);
+    auto toIt = notes.find(toName);
+
+    if (fromIt == notes.end() || toIt == notes.end())
+    {
+      throw std::logic_error("");
+    }
+
+    fromIt->second->removeLink(toIt->second);
+  }
+
+  void expired(std::istream& in, std::ostream& out, NotesMap& notes)
+  {
+    std::string name;
+
+    if (!(in >> name))
+    {
+      throw std::logic_error("");
+    }
+
+    auto it = notes.find(name);
+
+    if (it == notes.end())
+    {
+      throw std::logic_error("");
+    }
+
+    out << it->second->countExpired() << '\n';
+  }
+
+  void refresh(std::istream& in, std::ostream&, NotesMap& notes)
+  {
+    std::string name;
+
+    if (!(in >> name))
+    {
+      throw std::logic_error("");
+    }
+
+    auto it = notes.find(name);
+
+    if (it == notes.end())
+    {
+      throw std::logic_error("");
+    }
+
+    it->second->clearExpired();
+  }
 }
