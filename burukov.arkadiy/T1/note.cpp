@@ -76,6 +76,38 @@ namespace burukov
     }
   }
 
+  size_t Note::countExpired() const
+  {
+    size_t count = 0;
+
+    for (auto it = links_.begin(); it != links_.end(); ++it)
+    {
+      if (!it->lock())
+      {
+        ++count;
+      }
+    }
+
+    return count;
+  }
+
+  void Note::clearExpired()
+  {
+    auto it = links_.begin();
+
+    while (it != links_.end())
+    {
+      if (it->lock())
+      {
+        ++it;
+      }
+      else
+      {
+        it = links_.erase(it);
+      }
+    }
+  }
+
   const std::string& Note::getName() const
   {
     return name_;
