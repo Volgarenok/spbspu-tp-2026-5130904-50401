@@ -108,11 +108,22 @@ void haltNote(std::istream& in, std::ostream&, unordered_map_of_notes& notes)
   auto note = notes[name_from];
   std::string name_to;
   in >> name_to;
-  if (note->ref_names.count(name_to) == 0)
+  if (notes.count(name_to) == 0)
   {
     throw std::logic_error("No referense to this note in " + name_from);
   }
   note->ref_names.erase(name_to);
+  for (auto it = note->refs.begin(); it != note->refs.end(); ++it)
+  {
+    if (auto shared = it->lock())
+    {
+      if (shared->name == name_to)
+      {
+        note->refs.erase(it);
+        break;
+      }
+    }
+  }
 }
 
 void mindMap(std::istream& in, std::ostream& out, unordered_map_of_notes& notes)
@@ -124,6 +135,7 @@ void mindMap(std::istream& in, std::ostream& out, unordered_map_of_notes& notes)
     throw std::logic_error ("No note with this name");
   }
   auto note = notes[name_from];
+  bool is_something_printed = false;
   for (size_t i = 0; i < note->refs.size(); ++i)
   {
     if (auto shared = note->refs[i].lock())
@@ -132,8 +144,13 @@ void mindMap(std::istream& in, std::ostream& out, unordered_map_of_notes& notes)
       if (note->ref_names.count(name))
       {
         out << name << "\n";
+        is_something_printed = true;
       }
     }
+  }
+  if (!is_something_printed)
+  {
+    out << "\n";
   }
 }
 
@@ -212,15 +229,12 @@ int main()
     {
       cmds.at(cmd)(std::cin, std::cout, notes);
     }
-    catch (const std::out_of_range&)
+    catch (const std::exception&)
     {
       std::cout << "<INVALID COMMAND>\n";
       auto toignore = std::numeric_limits< std::streamsize >::max();
+      std::cin.clear();
       std::cin.ignore(toignore, '\n');
-    }
-    catch (const std::logic_error& e)
-    {
-      std::cout << "<INVALID COMMAND: " << ">\n";
     }
   }
 }
