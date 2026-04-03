@@ -21,6 +21,24 @@ namespace burukov
     }
   }
 
+  void Note::addLink(const std::weak_ptr< Note >& link)
+  {
+    std::shared_ptr< Note > newLink = link.lock();
+
+    for (auto it = links_.begin(); it != links_.end(); ++it)
+    {
+      if (auto existing = it->lock())
+      {
+        if (newLink && existing && newLink == existing)
+        {
+          throw std::logic_error("");
+        }
+      }
+    }
+
+    links_.push_back(link);
+  }
+
   const std::string& Note::getName() const
   {
     return name_;
