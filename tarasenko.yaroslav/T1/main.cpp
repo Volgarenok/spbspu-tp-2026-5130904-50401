@@ -13,7 +13,6 @@ struct Note
   std::vector< std::string > data;
   std::vector< std::weak_ptr< Note > > refs;
   std::unordered_set< std::string > ref_names;
-  size_t expired_refs = 0;
 };
 
 using unordered_map_of_notes = std::unordered_map< std::string, std::shared_ptr< Note > >;
@@ -109,16 +108,11 @@ void haltNote(std::istream& in, std::ostream&, unordered_map_of_notes& notes)
   auto note = notes[name_from];
   std::string name_to;
   in >> name_to;
-  if (notes.count(name_to) == 0)
-  {
-    throw std::logic_error ("No note-to with this name");
-  }
   if (note->ref_names.count(name_to) == 0)
   {
     throw std::logic_error("No referense to this note in " + name_from);
   }
   note->ref_names.erase(name_to);
-  ++note->expired_refs;
 }
 
 void mindMap(std::istream& in, std::ostream& out, unordered_map_of_notes& notes)
@@ -151,7 +145,16 @@ void expiredLinks(std::istream& in, std::ostream& out, unordered_map_of_notes& n
   {
     throw std::logic_error ("No note with this name");
   }
-  out << notes[name_from]->expired_refs << "\n";
+  auto note = notes[name_from];
+  size_t count = 0;
+  for (size_t i = 0; i < note->refs.size(); ++i)
+  {
+    if (note->refs[i].expired())
+    {
+      ++count;
+    }
+  }
+  out << count << "\n";
 }
 
 void refreshLinks(std::istream& in, std::ostream&, unordered_map_of_notes& notes)
@@ -163,15 +166,24 @@ void refreshLinks(std::istream& in, std::ostream&, unordered_map_of_notes& notes
     throw std::logic_error ("No note with this name");
   }
   auto note = notes[name_from];
-  for (auto it = note->ref_names.begin(); it != note->ref_names.end();)
+  std::vector< std::weak_ptr< Note > > new_refs;
+  for (auto it = note->refs.begin(); it != note->refs.end();)
   {
-    if (notes.count(*it) == 0)
+    if (it->expired())
     {
-      it = note->ref_names.erase(it);
+      it = note->refs.erase(it);
     }
     else
     {
       ++it;
+    }
+  }
+  note->ref_names.clear();
+  for (size_t i = 0; i < note->refs.size(); ++i)
+  {
+    if (auto shared = note->refs[i].lock())
+    {
+      note->ref_names.insert(shared->name);
     }
   }
 }
@@ -208,7 +220,7 @@ int main()
     }
     catch (const std::logic_error& e)
     {
-      std::cout << "<INVALID COMMAND: " << e.what() << ">\n";
+      std::cout << "<INVALID COMMAND: " << ">\n";
     }
   }
 }
