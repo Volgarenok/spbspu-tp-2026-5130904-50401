@@ -33,6 +33,10 @@ namespace kuznetsov {
     in >> name;
     try {
       const std::vector<std::string>& lines = db.at(name)->lines_;
+      if (lines.empty()) {
+        out << '\n';
+        return;
+      }
       for (const std::string& str: lines) {
         out << str << '\n';
       }
@@ -64,6 +68,15 @@ namespace kuznetsov {
       throw std::logic_error("\"to note\" does not exist");
     }
     std::shared_ptr<Record> fromNote = db.at(from);
+    const std::vector< std::weak_ptr< Record > >& r = fromNote->refs_;
+    for (auto ref : r) {
+      if (std::shared_ptr< Record > rec = ref.lock()) {
+        if (rec->name_ == to) {
+          throw std::logic_error("This notes already linked");
+        }
+      }
+    }
+
     std::shared_ptr<Record> toNote = db.at(to);
     fromNote->refs_.push_back(toNote);
   }
@@ -76,6 +89,10 @@ namespace kuznetsov {
       throw std::logic_error("this note does not exist");
     }
     const std::vector<std::weak_ptr<Record> >& links = db.at(name)->refs_;
+    if (links.empty()) {
+      out << '\n';
+      return;
+    }
     for (const std::weak_ptr<Record>& link : links) {
       if (const std::shared_ptr<Record> spt = link.lock()) {
         out << spt->name_ << '\n';

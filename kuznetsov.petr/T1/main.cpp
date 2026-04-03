@@ -26,15 +26,13 @@ int main()
     try {
       if (constCmds.count(cmd)) {
         constCmds.at(cmd)(std::cin, std::cout, db);
-      } else if (cmds.count(cmd)) {
-        cmds.at(cmd)(std::cin, std::cout, db);
       } else {
-        std::cout << "<INVALID COMMAND>\n";
-        auto skip = std::numeric_limits< std::streamsize >::max();
-        std::cin.ignore(skip, '\n');
+        cmds.at(cmd)(std::cin, std::cout, db);
       }
     } catch (const std::logic_error& e) {
-      std::cout << "<INVALID COMMAND: " << e.what() << ">\n";
+      std::cout << "<INVALID COMMAND>\n";
+      auto skip = std::numeric_limits< std::streamsize >::max();
+      std::cin.ignore(skip, '\n');
     }
   }
   return 0;
