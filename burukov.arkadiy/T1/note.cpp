@@ -65,6 +65,17 @@ namespace burukov
     }
   }
 
+  void Note::showLinks() const
+  {
+    for (auto it = links_.begin(); it != links_.end(); ++it)
+    {
+      if (auto target = it->lock())
+      {
+        std::cout << target->getName() << '\n';
+      }
+    }
+  }
+
   const std::string& Note::getName() const
   {
     return name_;
