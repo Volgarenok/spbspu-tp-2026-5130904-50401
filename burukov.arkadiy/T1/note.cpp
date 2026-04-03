@@ -39,6 +39,32 @@ namespace burukov
     links_.push_back(link);
   }
 
+  void Note::removeLink(const std::shared_ptr< Note >& target)
+  {
+    auto it = links_.begin();
+
+    while (it != links_.end())
+    {
+      if (auto current = it->lock())
+      {
+        if (current == target)
+        {
+          it = links_.erase(it);
+
+          return;
+        }
+        else
+        {
+          ++it;
+        }
+      }
+      else
+      {
+        ++it;
+      }
+    }
+  }
+
   const std::string& Note::getName() const
   {
     return name_;
