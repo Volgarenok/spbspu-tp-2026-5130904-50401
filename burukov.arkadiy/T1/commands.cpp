@@ -40,4 +40,38 @@ namespace burukov
 
     it->second->addLine(text);
   }
+
+  void show(std::istream& in, std::ostream&, NotesMap& notes)
+  {
+    std::string name;
+
+    if (!(in >> name))
+    {
+      throw std::logic_error("");
+    }
+
+    auto it = notes.find(name);
+
+    if (it == notes.end())
+    {
+      throw std::logic_error("");
+    }
+
+    it->second->showLines();
+  }
+
+  void drop(std::istream& in, std::ostream&, NotesMap& notes)
+  {
+    std::string name;
+
+    if (!(in >> name))
+    {
+      throw std::logic_error("");
+    }
+
+    if (notes.erase(name) == 0)
+    {
+      throw std::logic_error("");
+    }
+  }
 }
