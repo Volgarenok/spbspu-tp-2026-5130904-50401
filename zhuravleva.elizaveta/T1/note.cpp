@@ -9,9 +9,7 @@ namespace zhuravleva
     {
       throw std::logic_error("note with this name already exists");
     }
-    NotePtr note = std::make_shared< Note >();
-    note -> name = name;
-    db[name] = note;
+    db[name] = std::make_shared<Note>(Note{name});
   }
 
   void add_line(Db& db, const std::string& name, const std::string& text)
@@ -63,7 +61,7 @@ namespace zhuravleva
 
   void halt(Db& db, const std::string& from, const std::string& to)
   {
-    
+
     if (!db.count(from) || !db.count(to))
     {
       throw std::logic_error("invalid link");
