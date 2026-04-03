@@ -79,7 +79,14 @@ namespace goltsov
     {
       if (all_notes[i]->name == note_name)
       {
-        std::cout << all_notes[i]->text;
+        if (all_notes[i]->text.size() == 0)
+        {
+          std::cout << '\n';
+        }
+        else
+        {
+          std::cout << all_notes[i]->text;
+        }
         return;
       }
     }
