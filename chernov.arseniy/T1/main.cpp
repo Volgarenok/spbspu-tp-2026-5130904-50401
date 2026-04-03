@@ -14,6 +14,7 @@ namespace chernov {
     std::string getText() const noexcept;
     void addLine(std::string line);
     void addLink(std::weak_ptr< Note > new_link);
+    std::vector< std::string > getValidLinkNames() const;
   private:
     std::string name_;
     std::string text_;
@@ -27,6 +28,7 @@ namespace chernov {
     void addLineToNote(std::string name, std::string line);
     void showNote(std::string name, std::ostream & output);
     void linkNotes(std::string name_from, std::string name_to);
+    void mindNote(std::string name, std::ostream & output);
   private:
     std::unordered_map< std::string, std::shared_ptr< Note > > notes_;
   };
@@ -36,6 +38,7 @@ namespace chernov {
   void cmdShow(std::istream & input, std::ostream & output, NoteBook & notebook);
   void cmdDrop(std::istream & input, std::ostream & output, NoteBook & notebook);
   void cmdLink(std::istream & input, std::ostream & output, NoteBook & notebook);
+  void cmdMind(std::istream & input, std::ostream & output, NoteBook & notebook);
 }
 
 int main()
@@ -53,6 +56,7 @@ int main()
   cmds["show"] = cmdShow;
   cmds["drop"] = cmdDrop;
   cmds["link"] = cmdLink;
+  cmds["mind"] = cmdMind;
 
   std::string cmd;
   while (input >> cmd) {
@@ -102,6 +106,17 @@ void chernov::Note::addLink(std::weak_ptr< Note > new_link)
     }
   }
   links_.push_back(new_link);
+}
+
+std::vector< std::string > chernov::Note::getValidLinkNames() const
+{
+  std::vector< std::string > valid_link_names;
+  for (auto link : links_) {
+    if (!link.expired()) {
+      valid_link_names.push_back(link.lock()->name_);
+    }
+  }
+  return valid_link_names;
 }
 
 void chernov::NoteBook::createNote(std::string name)
@@ -156,6 +171,20 @@ void chernov::NoteBook::linkNotes(std::string name_from, std::string name_to)
   }
 }
 
+void chernov::NoteBook::mindNote(std::string name, std::ostream & output)
+{
+  std::vector< std::string > valid_link_names;
+  try {
+    valid_link_names = notes_.at(name)->getValidLinkNames();
+  } catch (const std::out_of_range & e) {
+    throw std::logic_error("note not found");
+  }
+
+  for (auto link_name : valid_link_names) {
+    output << link_name << "\n";
+  }
+}
+
 void chernov::cmdNote(std::istream & input, std::ostream &, NoteBook & notebook)
 {
   std::string name;
@@ -191,4 +220,11 @@ void chernov::cmdLink(std::istream & input, std::ostream &, NoteBook & notebook)
   input >> name_from;
   input >> name_to;
   notebook.linkNotes(name_from, name_to);
+}
+
+void chernov::cmdMind(std::istream & input, std::ostream & output, NoteBook & notebook)
+{
+  std::string name;
+  input >> name;
+  notebook.mindNote(name, output);
 }
