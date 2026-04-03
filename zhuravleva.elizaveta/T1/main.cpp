@@ -93,13 +93,13 @@ int main()
     }
     catch (const std::out_of_range&)
     {
-      std::cout << "INVALID COMMAND\n";
+      std::cout << "<INVALID COMMAND>\n";
       auto toignore = std::numeric_limits<std::streamsize>::max();
       std::cin.ignore(toignore, '\n');
     }
     catch (const std::logic_error & e)
     {
-      std::cout << "< INVALID COMMAND " << ">\n ";
+      std::cout << "<INVALID COMMAND>" << "\n ";
     }
   }
   if (!std::cin.eof())
