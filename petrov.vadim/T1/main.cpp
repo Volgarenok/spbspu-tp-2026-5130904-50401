@@ -17,7 +17,6 @@ int main()
   data["expired"] = &Notebook::expired;
   data["refresh"] = &Notebook::refresh;
 
-
   Notebook n;
   std::string cmd;
   while (std::cin >> cmd)
