@@ -22,7 +22,7 @@ void petrov::Notebook::line(std::ostream&, std::istream& in, const std::string& 
   try
   {
     std::string text;
-    in >> text;
+    in >> std::quoted(text);
     notes_.at(t).get()->data_.push_back(text);
   }
   catch (std::out_of_range&)
@@ -58,6 +58,7 @@ void petrov::Notebook::drop(std::ostream&, std::istream&, const std::string& t)
 {
   try
   {
+    notes_.at(t);
     notes_.erase(t);
   }
   catch (std::out_of_range&)
@@ -97,6 +98,7 @@ void petrov::Notebook::halt(std::ostream&, std::istream& in, const std::string& 
     in >> toNote;
     try
     {
+      notes_.at(t);
       notes_.at(t).get()->links_.at(toNote);
     }
     catch (std::out_of_range &)
