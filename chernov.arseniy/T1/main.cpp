@@ -17,6 +17,7 @@ namespace chernov {
     void removeLink(std::string removable_link);
     std::vector< std::string > getValidLinkNames() const;
     size_t countExpired() const noexcept;
+    void cleanExpired();
   private:
     std::string name_;
     std::string text_;
@@ -33,6 +34,7 @@ namespace chernov {
     void mindNote(std::string name, std::ostream & output);
     void haltLink(std::string name_from, std::string name_to);
     void countExpiredLinks(std::string name, std::ostream & output);
+    void refreshLinks(std::string name);
   private:
     std::unordered_map< std::string, std::shared_ptr< Note > > notes_;
   };
@@ -45,6 +47,7 @@ namespace chernov {
   void cmdMind(std::istream & input, std::ostream & output, NoteBook & notebook);
   void cmdHalt(std::istream & input, std::ostream & output, NoteBook & notebook);
   void cmdExpired(std::istream & input, std::ostream & output, NoteBook & notebook);
+  void cmdRefresh(std::istream & input, std::ostream & output, NoteBook & notebook);
 }
 
 int main()
@@ -65,6 +68,7 @@ int main()
   cmds["mind"] = cmdMind;
   cmds["halt"] = cmdHalt;
   cmds["expired"] = cmdExpired;
+  cmds["refresh"] = cmdRefresh;
 
   std::string cmd;
   while (input >> cmd) {
@@ -145,6 +149,16 @@ size_t chernov::Note::countExpired() const noexcept
     count += link.expired();
   }
   return count;
+}
+
+void chernov::Note::cleanExpired()
+{
+  size_t size = links_.size();
+  for (size_t i = 0; i < size; ++i) {
+    if (links_[size - i - 1].expired()) {
+      links_.erase(links_.begin() + (size - i - 1));
+    }
+  }
 }
 
 void chernov::NoteBook::createNote(std::string name)
@@ -235,6 +249,15 @@ void chernov::NoteBook::countExpiredLinks(std::string name, std::ostream & outpu
   }
 }
 
+void chernov::NoteBook::refreshLinks(std::string name)
+{
+  try {
+    notes_.at(name)->cleanExpired();
+  } catch (const std::out_of_range & e) {
+    throw std::logic_error("note not found");
+  }
+}
+
 void chernov::cmdNote(std::istream & input, std::ostream &, NoteBook & notebook)
 {
   std::string name;
@@ -289,4 +312,11 @@ void chernov::cmdExpired(std::istream & input, std::ostream & output, NoteBook &
   std::string name;
   input >> name;
   notebook.countExpiredLinks(name, output);
+}
+
+void chernov::cmdRefresh(std::istream & input, std::ostream &, NoteBook & notebook)
+{
+  std::string name;
+  input >> name;
+  notebook.refreshLinks(name);
 }
