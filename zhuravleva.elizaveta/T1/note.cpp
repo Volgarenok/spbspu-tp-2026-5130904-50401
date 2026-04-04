@@ -62,12 +62,11 @@ namespace zhuravleva
   void halt(Db& db, const std::string& from, const std::string& to)
   {
 
-    if (!db.count(from) || !db.count(to))
+    if (!db.count(from))
     {
       throw std::logic_error("invalid link");
     }
     auto from_note = db[from];
-    auto to_note = db[to];
     for (size_t i = 0; i < from_note->links.size(); ++i)
     {
       auto sp = from_note->links[i].lock();

@@ -99,14 +99,14 @@ int main()
     }
     catch (const std::logic_error & e)
     {
-      std::cout << "<INVALID COMMAND>" << "\n";
+      std::cout << "<INVALID COMMAND>\n";
       auto toignore = std::numeric_limits<std::streamsize>::max();
       std::cin.ignore(toignore, '\n');
     }
   }
   if (!std::cin.eof())
   {
-    std::cerr << "bad input \n";
+    std::cerr << "bad input\n";
     return 1;
   }
   return 0;
