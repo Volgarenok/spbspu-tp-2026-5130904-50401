@@ -56,7 +56,7 @@ namespace sedov
     }
     if (notes.erase(n) == 0)
     {
-      std::logic_error("");
+      throw std::logic_error("");
     }
   }
 
