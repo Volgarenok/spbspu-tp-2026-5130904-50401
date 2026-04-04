@@ -26,6 +26,10 @@ void show(std::istream& in, std::ostream& out, zhuravleva::Db& db)
   {
     out << lines[i] << "\n";
   }
+  if (lines.empty())
+  {
+    out << "\n";
+  }
 }
 void drop(std::istream& in, std::ostream&, zhuravleva::Db& db)
 {
