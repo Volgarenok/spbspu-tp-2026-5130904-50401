@@ -38,11 +38,6 @@ namespace vasyakin
 
   void Note::noteHalt(const std::shared_ptr< Note >& target)
   {
-    if (target.get() == this)
-    {
-      throw std::logic_error("");
-    }
-
     auto it = links_.begin();
     while (it != links_.end())
     {
