@@ -2,7 +2,6 @@
 #define NOTE_HPP
 
 #include <memory>
-#include <unordered_map>
 #include <string>
 #include <vector>
 
