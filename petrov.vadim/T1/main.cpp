@@ -17,12 +17,17 @@ int main()
   data["expired"] = &Notebook::expired;
   data["refresh"] = &Notebook::refresh;
 
+
+  Notebook n;
   std::string cmd;
   while (std::cin >> cmd)
   {
     try
     {
       data.at(cmd);
+      std::string Arg;
+      std::cin >> Arg;
+      (n.*data.at(cmd))(std::cout, std::cin, Arg);
     }
     catch(...)
     {
@@ -30,11 +35,11 @@ int main()
       auto toignore = std::numeric_limits< std::streamsize >::max();
       std::cin.ignore(toignore, '\n');
     }
+  }
 
-    if (!std::cin.eof())
-    {
-      std::cerr << "BAD INPUT!\n";
-      return 1;
-    }
+  if (!std::cin.eof())
+  {
+    std::cerr << "BAD INPUT!\n";
+    return 1;
   }
 }
