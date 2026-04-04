@@ -235,10 +235,6 @@ void chernov::NoteBook::mindNote(std::string name, std::ostream & output)
 
 void chernov::NoteBook::haltLink(std::string name_from, std::string name_to)
 {
-  if (!notes_.count(name_to)) {
-    throw std::logic_error("note-to not found");
-  }
-
   try {
     notes_.at(name_from)->removeLink(name_to);
   } catch (const std::out_of_range & e) {
@@ -274,7 +270,7 @@ void chernov::cmdNote(std::istream & input, std::ostream &, NoteBook & notebook)
 void chernov::cmdLine(std::istream & input, std::ostream &, NoteBook & notebook)
 {
   std::string name, line;
-  input >> name >> std::quoted(line);;
+  input >> name >> std::quoted(line);
   notebook.addLineToNote(name, line);
 }
 
