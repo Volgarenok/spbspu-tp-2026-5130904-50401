@@ -91,13 +91,20 @@ namespace ulanova
       throw std::logic_error("note not found");
     }
     auto& links = it_from -> second -> links;
-    for (size_t i = 0; i< links.size(); ++i)
+    bool found = false;
+    for (auto it = links.begin(); it != links.end(); ++it)
     {
-      auto ptr = links[i].lock();
-      if (ptr != nullptr && ptr == it_to -> second)
+      auto ptr = it->lock();
+      if (ptr != nullptr && ptr == it_to->second)
       {
-        links.erase(links.begin() + i);
+        links.erase(it);
+        found = true;
+        break;
       }
+    }
+    if (!found)
+    {
+      throw std::logic_error("link not found");
     }
   }
   size_t expired(const DB& db, const std::string& name)
@@ -126,15 +133,15 @@ namespace ulanova
       throw std::logic_error("error");
     }
     auto& links = it -> second -> links;
-    for (size_t i = 0; i < links.size();)
+    for (auto it_link = links.begin(); it_link != links.end();)
     {
-      if (links[i].lock() == nullptr)
+      if (it_link->lock() == nullptr)
       {
-        links.erase(links.begin() + i);
+        it_link = links.erase(it_link);
       }
       else
       {
-        i++;
+        ++it_link;
       }
     }
   }
