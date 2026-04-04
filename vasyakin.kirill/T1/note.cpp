@@ -18,6 +18,11 @@ namespace vasyakin
     {
       std::cout << lines_[i] << '\n';
     }
+
+    if (lines_.empty())
+    {
+      std::cout << '\n';
+    }
   }
 
   void Note::noteLink(const std::weak_ptr< Note >& link)
@@ -62,12 +67,19 @@ namespace vasyakin
 
   void Note::noteMind() const
   {
+    bool printed = false;
     for (auto it = links_.begin(); it != links_.end(); ++it)
     {
       if (auto shr_ptr = it->lock())
       {
         std::cout << shr_ptr->getName() << '\n';
+        printed = true;
       }
+    }
+
+    if (!printed)
+    {
+      std::cout << '\n';
     }
   }
 
