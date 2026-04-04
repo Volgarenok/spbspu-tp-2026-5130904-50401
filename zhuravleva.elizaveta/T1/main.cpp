@@ -54,6 +54,7 @@ void mind(std::istream& in, std::ostream& out, zhuravleva::Db& db)
   {
     out << res[i] << "\n";
   }
+  out << "\n";
 }
 void expired(std::istream& in, std::ostream& out, zhuravleva::Db& db)
 {
@@ -99,7 +100,7 @@ int main()
     }
     catch (const std::logic_error & e)
     {
-      std::cout << "<INVALID COMMAND>\n";
+      std::cout << "<INVALID COMMAND>" << "\n";
       auto toignore = std::numeric_limits<std::streamsize>::max();
       std::cin.ignore(toignore, '\n');
     }
