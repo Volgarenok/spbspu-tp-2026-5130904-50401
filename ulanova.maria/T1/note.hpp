@@ -17,6 +17,7 @@ namespace ulanova
   using NotePtr = std::shared_ptr<Note>;
   using DB = std::unordered_map<std::string, NotePtr>;
 
+  
   void create_note(DB& db, const std::string& name);
   void add_line(DB& db, const std::string& name, const std::string& text);
   std::vector<std::string> show(const DB& db, const std::string& name);
