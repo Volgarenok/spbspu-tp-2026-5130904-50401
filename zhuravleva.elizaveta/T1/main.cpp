@@ -59,7 +59,7 @@ void expired(std::istream& in, std::ostream& out, zhuravleva::Db& db)
 {
   std::string name;
   in >> name;
-  out << zhuravleva::expired(db, name);
+  out << zhuravleva::expired(db, name) << "\n";
 }
 void refresh(std::istream& in, std::ostream&, zhuravleva::Db& db)
 {
@@ -99,7 +99,9 @@ int main()
     }
     catch (const std::logic_error & e)
     {
-      std::cout << "<INVALID COMMAND>";
+      std::cout << "<INVALID COMMAND>" << "\n";
+      auto toignore = std::numeric_limits<std::streamsize>::max();
+      std::cin.ignore(toignore, '\n');
     }
   }
   if (!std::cin.eof())
