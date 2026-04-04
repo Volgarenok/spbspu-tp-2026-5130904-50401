@@ -22,13 +22,16 @@ void show(std::istream& in, std::ostream& out, ulanova::DB& db)
   std::string name;
   in >> name;
   auto lines = ulanova::show(db, name);
-  for (size_t i = 0; i < lines.size();i++)
-  {
-    out << lines[i] << "\n";
-  }
   if (lines.empty())
   {
-    out << "";
+    out << "\n";
+  }
+  else
+  {
+    for (size_t i = 0; i < lines.size();i++)
+    {
+      out << lines[i] << "\n";
+    }
   }
 }
 void drop(std::istream& in, std::ostream&, ulanova::DB& db)
