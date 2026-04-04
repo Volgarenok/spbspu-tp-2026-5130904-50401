@@ -14,6 +14,10 @@ namespace sedov
 
   void Note::nShow() const
   {
+    if (lines_.empty())
+    {
+      std::cout << "\n";
+    }
     for (size_t i = 0; i < lines_.size(); ++i)
     {
       std::cout << lines_[i] << "\n";
@@ -29,7 +33,7 @@ namespace sedov
       {
         if (shPtr1 && shPtr2 && shPtr1 == shPtr2)
         {
-          return;
+          throw std::logic_error("");
         }
       }
     }
@@ -62,12 +66,18 @@ namespace sedov
 
   void Note::nMind() const
   {
+    bool p = false;
     for (auto it = links_.begin(); it != links_.end(); ++it)
     {
       if (auto shPtr = it->lock())
       {
         std::cout << shPtr->getName() << "\n";
+        p = true;
       }
+    }
+    if (!p)
+    {
+      std::cout << "\n";
     }
   }
 

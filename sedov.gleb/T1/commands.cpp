@@ -10,10 +10,11 @@ namespace sedov
     {
       std::logic_error("");
     }
-    if (notes.find(n) == notes.end())
+    if (notes.find(n) != notes.end())
     {
-      notes[n] = std::make_shared< sedov::Note >(n);
+      throw std::logic_error("");
     }
+    notes[n] = std::make_shared< sedov::Note >(n);
   }
 
   void line(std::istream & in, std::ostream &, NUM & notes)
