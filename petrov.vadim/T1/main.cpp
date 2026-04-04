@@ -1,5 +1,4 @@
 #include "notebook.hpp"
-#include <iostream>
 #include <limits>
 
 int main()
