@@ -98,7 +98,7 @@ void petrov::Notebook::halt(std::ostream&, std::istream& in, const std::string& 
     in >> toNote;
     try
     {
-      notes_.at(t);
+      notes_.at(toNote);
       notes_.at(t).get()->links_.at(toNote);
     }
     catch (std::out_of_range &)
@@ -179,7 +179,7 @@ void petrov::Notebook::refresh(std::ostream&, std::istream&, const std::string& 
     {
       if (!(i->second).lock().get())
       {
-        crr.erase(i->first);
+        notes_.at(t).get()->links_.erase(i->first);
       }
     }
   }
