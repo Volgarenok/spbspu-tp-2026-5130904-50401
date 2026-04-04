@@ -13,16 +13,16 @@ namespace kondrat
   using db = std::unordered_map< std::string, std::shared_ptr< Note > >;
   using command = void(*)(std::istream &, std::ostream &, db &);
 
-  void comNote(std::istream& in, std::ostream& out, db& data);
-  void comLine(std::istream& in, std::ostream& out, db& data);
-  void comShow(std::istream& in, std::ostream& out, db& data);
-  void comDrop(std::istream& in, std::ostream& out, db& data);
+  void comNote(std::istream & in, std::ostream & out, db & data);
+  void comLine(std::istream & in, std::ostream & out, db & data);
+  void comShow(std::istream & in, std::ostream & out, db & data);
+  void comDrop(std::istream & in, std::ostream & out, db & data);
 
-  void comLink(std::istream& in, std::ostream& out, db& data);
-  void comHalt(std::istream& in, std::ostream& out, db& data);
-  void comMind(std::istream& in, std::ostream& out, db& data);
-  void comExpired(std::istream& in, std::ostream& out, db& data);
-  void comRefresh(std::istream& in, std::ostream& out, db& data);
+  void comLink(std::istream & in, std::ostream & out, db & data);
+  void comHalt(std::istream & in, std::ostream & out, db & data);
+  void comMind(std::istream & in, std::ostream & out, db & data);
+  void comExpired(std::istream & in, std::ostream & out, db & data);
+  void comRefresh(std::istream & in, std::ostream & out, db & data);
 }
 
 #endif
