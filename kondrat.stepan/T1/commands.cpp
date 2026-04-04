@@ -68,6 +68,12 @@ namespace kondrat
 
     std::shared_ptr< Note > note = findNote(name, data);
 
+    if (note->lines_.empty())
+    {
+      out << '\n';
+      return;
+    }
+
     for (size_t i = 0; i < note->lines_.size(); ++i)
     {
       out << note->lines_[i] << '\n';
@@ -143,13 +149,20 @@ namespace kondrat
 
     std::shared_ptr< Note > note = findNote(name, data);
 
+    bool printed = false;
     for (size_t i = 0; i < note->links_.size(); ++i)
     {
       std::shared_ptr< Note > ptr = note->links_[i].lock();
       if (ptr)
       {
         out << ptr->name_ << '\n';
+        printed = true;
       }
+    }
+
+    if (!printed)
+    {
+      out << '\n';
     }
   }
 
