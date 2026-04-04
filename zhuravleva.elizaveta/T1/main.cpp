@@ -54,7 +54,10 @@ void mind(std::istream& in, std::ostream& out, zhuravleva::Db& db)
   {
     out << res[i] << "\n";
   }
-  out << "\n";
+  if (res.empty())
+  {
+    out << "\n";
+  }
 }
 void expired(std::istream& in, std::ostream& out, zhuravleva::Db& db)
 {
@@ -90,7 +93,7 @@ int main()
   {
     try
     {
-      cmds.at(cmd)(std::cin,std::cout,db);
+      cmds.at(cmd)(std::cin, std::cout, db);
     }
     catch (const std::out_of_range&)
     {
@@ -104,11 +107,6 @@ int main()
       auto toignore = std::numeric_limits<std::streamsize>::max();
       std::cin.ignore(toignore, '\n');
     }
-  }
-  if (!std::cin.eof())
-  {
-    std::cerr << "bad input\n";
-    return 1;
   }
   return 0;
 }
