@@ -76,11 +76,11 @@ int main()
     try {
       cmds.at(cmd)(input, output, notebook);
     } catch (const std::out_of_range & e) {
-      output << "< INVALID COMMAND >\n";
+      output << "<INVALID COMMAND>\n";
       auto max_streamsize = std::numeric_limits< std::streamsize >::max();
       input.ignore(max_streamsize, '\n');
     } catch (const std::logic_error & e) {
-      output << "< INVALID COMMAND: " << e.what() << " >\n";
+      output << "<INVALID COMMAND>\n";
     }
   }
   if (!input.eof()) {
