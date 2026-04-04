@@ -112,12 +112,17 @@ void chernov::Note::addLine(std::string line)
 
 void chernov::Note::addLink(std::weak_ptr< Note > new_link)
 {
+  auto target = new_link.lock();
+  if (!target) {
+    throw std::logic_error("target note expired");
+  }
   for (auto link : links_) {
-    if (link.lock() == new_link.lock()) {
-      throw std::logic_error("link already exists");
+    auto sp = link.lock();
+    if (sp && sp->name_ == target->name_) {
+      throw std::logic_error("duplicate link");
     }
   }
-  links_.push_back(new_link);
+  links_.push_back(std::move(new_link));
 }
 
 void chernov::Note::removeLink(std::string link_name)
