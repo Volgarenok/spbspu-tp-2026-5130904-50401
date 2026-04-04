@@ -122,9 +122,10 @@ void chernov::Note::addLink(std::weak_ptr< Note > new_link)
 
 void chernov::Note::removeLink(std::string link_name)
 {
-  for (size_t i = 0; i < links_.size(); ++i) {
-    if (links_[i].lock()->name_ == link_name) {
-      links_.erase(links_.begin() + i);
+  for (auto it = links_.begin(); it != links_.end(); ++it) {
+    auto sp = it->lock();
+    if (sp && sp->name_ == link_name) {
+      links_.erase(it);
       return;
     }
   }
