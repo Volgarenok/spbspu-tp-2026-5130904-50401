@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <iomanip>
 #include <limits>
@@ -159,12 +160,11 @@ size_t chernov::Note::countExpired() const noexcept
 
 void chernov::Note::cleanExpired()
 {
-  size_t size = links_.size();
-  for (size_t i = 0; i < size; ++i) {
-    if (links_[size - i - 1].expired()) {
-      links_.erase(links_.begin() + (size - i - 1));
-    }
-  }
+  auto is_expired = [](const auto & link) -> bool
+  {
+    return link.expired();
+  };
+  links_.erase(std::remove_if(links_.begin(), links_.end(), is_expired), links_.end());
 }
 
 void chernov::NoteBook::createNote(std::string name)
