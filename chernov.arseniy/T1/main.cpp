@@ -231,6 +231,9 @@ void chernov::NoteBook::mindNote(std::string name, std::ostream & output)
   for (auto link_name : valid_link_names) {
     output << link_name << "\n";
   }
+  if (valid_link_names.empty()) {
+    output << "\n";
+  }
 }
 
 void chernov::NoteBook::haltLink(std::string name_from, std::string name_to)
