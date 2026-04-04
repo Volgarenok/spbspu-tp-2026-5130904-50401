@@ -1,28 +1,29 @@
-#include <unordered_map>
-#include <string>
-#include <vector>
+#include "notebook.hpp"
 #include <iostream>
 #include <limits>
 
 int main()
 {
-  std::unordered_map< std::string, void(*)(std::vector< std::string >&) > data;
-  data["note"] == ;
-  data["line"] == ;
-  data["show"] == ;
-  data["drop"] == ;
-  data["link"] == ;
-  data["halt"] == ;
-  data["mind"] == ;
-  data["expired"] == ;
-  data["refresh"] == ;
+  using namespace petrov;
+  using cmd_t = void(Notebook::*)(std::ostream&, std::istream&, const std::string&);
+
+  std::unordered_map< std::string, cmd_t > data;
+  data["note"] = &Notebook::note;
+  data["line"] = &Notebook::line;
+  data["show"] = &Notebook::show;
+  data["drop"] = &Notebook::drop;
+  data["link"] = &Notebook::link;
+  data["halt"] = &Notebook::halt;
+  data["mind"] = &Notebook::mind;
+  data["expired"] = &Notebook::expired;
+  data["refresh"] = &Notebook::refresh;
 
   std::string cmd;
   while (std::cin >> cmd)
   {
     try
     {
-      /* code */
+      data.at(cmd);
     }
     catch(...)
     {
