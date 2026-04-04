@@ -84,7 +84,7 @@ int main()
   cmds["refresh"] = refresh;
 
   std::string cmd;
-  
+
   while (std::cin >> cmd)
   {
     try
