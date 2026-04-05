@@ -175,6 +175,26 @@ void halt(std::istream & in,
   }
 }
 
+void mind(std::istream & in,
+  std::ostream & out,
+  std::map<std::string, std::shared_ptr< Note >> & notebook)
+{
+  std::string name;
+  auto it = find_name(in, out, notebook, name);
+  if (it == notebook.end()) {
+    return;
+  }
+  if (!the_end(in, out)) {
+    return;
+  }
+  auto itp = it->second->pointers.begin();
+  for (; itp != it->second->pointers.end(); ++itp) {
+    if (itp->lock()) {
+      out << itp->lock()->name << "\n";
+    }
+  }
+}
+
 int main()
 {
   std::map<std::string, std::shared_ptr< Note >> notebook;
@@ -187,6 +207,8 @@ int main()
   cmds["show"] = show;
   cmds["drop"] = drop;
   cmds["link"] = link;
+  cmds["halt"] = halt;
+  cmds["mind"] = mind;
 
   std::string cmd;
   while (std::cin >> cmd) {
