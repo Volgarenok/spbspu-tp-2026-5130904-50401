@@ -19,6 +19,12 @@ void addNote(std::istream&, std::ostream&, std::unordered_map< Note >& notes)
 
 void addLine(std::istream&, std::ostream&, std::unordered_map< Note >& notes)
 {
+  std::string name, line;
+  in >> name >> std::quoted(line);
+  if (notes.find(name) == notes.end()) {
+    throw std::logic_error("Note with this name doesnt exist!");
+  }
+  notes[name]->lines.push_back(line);
 }
 
 void showNote(std::istream&, std::ostream&, std::unordered_map< Note >& notes)
