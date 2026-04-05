@@ -107,6 +107,14 @@ void hvostov::expiredNote(std::istream& in, std::ostream& out, NoteBook& notes)
   if (notes.find(note_from) == notes.end()) {
     throw std::logic_error("Note with this name doesnt exist");
   }
+  size_t count = 0;
+  auto& links = notes[note_from]->linked_notes;
+  for (auto it = links.begin(); it != links.end(); it++) {
+    if (it->expired()) {
+      count++;
+    }
+  }
+  out << count << "\n";
 }
 
 void hvostov::refreshNote(std::istream& in, std::ostream&, NoteBook& notes)
