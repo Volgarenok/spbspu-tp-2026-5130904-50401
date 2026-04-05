@@ -4,18 +4,25 @@
 #include <vector>
 #include <memory>
 #include <limits>
+#include <iomanip>
 struct Note {
   std::string name;
   std::vector< std::string > text;
   std::vector< std::weak_ptr< Note >> pointers;
 };
 
-void create_node(std::istream & in,
+void create_note(std::istream & in,
   std::ostream & out,
   std::map<std::string, std::shared_ptr< Note >> & notebook)
 {
   std::string name;
   if (!(in >> name)) {
+    out << "<INVALID COMMAND>\n";
+    return;
+  }
+  std::string remainder;
+  getline(in, remainder);
+  if (!remainder.empty()) {
     out << "<INVALID COMMAND>\n";
     return;
   }
@@ -26,6 +33,37 @@ void create_node(std::istream & in,
   }
 }
 
+void add_line(std::istream & in,
+  std::ostream & out,
+  std::map<std::string, std::shared_ptr< Note >> & notebook)
+{
+  std::string name;
+  if (!(in >> name)) {
+    out << "<INVALID COMMAND>\n";
+    return;
+  }
+  auto it = notebook.find(name);
+  if (it == notebook.end()) {
+    out << "<INVALID COMMAND>\n";
+    auto toignor = std::numeric_limits< std::streamsize >::max();
+    std::cin.ignore(toignor, '\n');
+    return;
+  }
+  std::string str;
+  if (!(in >> std::quoted(str))) {
+    out << "<INVALID COMMAND>\n";
+    return;
+  }
+  std::string remainder;
+  getline(in, remainder);
+  if (!remainder.empty()) {
+    out << "<INVALID COMMAND>\n";
+    return;
+  }
+  std::shared_ptr< Note > note = it->second;
+  note->text.push_back(str);
+}
+
 int main()
 {
   std::map<std::string, std::shared_ptr< Note >> notebook;
@@ -33,7 +71,8 @@ int main()
     std::ostream & out,
     std::map<std::string, std::shared_ptr< Note >> & notebook);
   std::map< std::string, cmd_t > cmds;
-  cmds["note"] = create_node;
+  cmds["note"] = create_note;
+  cmds["line"] = add_line;
 
   std::string cmd;
   while (std::cin >> cmd) {
