@@ -19,6 +19,11 @@ int main()
   cmds["line"] = addLine;
   cmds["show"] = showNote;
   cmds["drop"] = dropNote;
+  cmds["link"] = linkNote;
+  cmds["halt"] = haltNote;
+  cmds["mind"] = mindNote;
+  cmds["expired"] = expiredNote;
+  cmds["refresh"] = refreshNote;
   std::string cmd;
   while (std::cin >> cmd) {
     try {

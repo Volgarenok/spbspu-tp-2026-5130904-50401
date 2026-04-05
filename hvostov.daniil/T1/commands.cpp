@@ -49,7 +49,14 @@ void hvostov::dropNote(std::istream& in, std::ostream&, NoteBook& notes)
 
 void hvostov::linkNote(std::istream& in, std::ostream&, NoteBook& notes)
 {
-
+  std::string note_from, note_to;
+  in >> note_from >> note_to;
+  if (notes.find(note_from) == notes.end()) {
+    throw std::logic_error("Note with this name doesnt exist");
+  } else if (notes.find(note_to) == notes.end()) {
+    throw std::logic_error("Note with this name doesnt exist");
+  }
+  notes[note_from]->linked_notes.push_back(notes[note_to]);
 }
 
 void hvostov::haltNote(std::istream& in, std::ostream&, NoteBook& notes)

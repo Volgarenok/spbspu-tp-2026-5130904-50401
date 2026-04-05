@@ -13,7 +13,7 @@ namespace hvostov {
   struct Note {
     std::string name;
     std::vector< std::string > lines;
-    std::vector< std::weak_ptr< Note > > other_notes;
+    std::vector< std::weak_ptr< Note > > linked_notes;
 
     Note(const std::string& n):
       name(n)
