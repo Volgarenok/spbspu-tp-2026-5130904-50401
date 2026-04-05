@@ -56,7 +56,12 @@ void showNote(std::istream& in, std::ostream& out, NoteBook& notes)
 
 void dropNote(std::istream&, std::ostream&, NoteBook& notes)
 {
-
+  std::string name;
+  in >> name;
+  if (names.find(name) == names.end()) {
+    throw std::logic_error("Note with this name doesnt exist");
+  }
+  names.erase(name);
 }
 
 int main()
