@@ -61,20 +61,51 @@ void hvostov::linkNote(std::istream& in, std::ostream&, NoteBook& notes)
 
 void hvostov::haltNote(std::istream& in, std::ostream&, NoteBook& notes)
 {
-
+  std::string note_from, note_to;
+  in >> note_from >> note_to;
+  if (notes.find(note_from) == notes.end()) {
+    throw std::logic_error("Note with this name doesnt exist");
+  } else if (notes.find(note_to) == notes.end()) {
+    throw std::logic_error("Note with this name doesnt exist");
+  }
+  auto& links = notes[note_from]->linked_notes;
+  for (auto it = links.begin(); it != links.end(); it++) {
+    if (auto locked = it->lock()) {
+      if (locked->name == note_to) {
+        links.erase(it);
+        return;
+      }
+    }
+  }
+  throw std::logic_error("Note doesnt have this link");
 }
 
 void hvostov::mindNote(std::istream& in, std::ostream&, NoteBook& notes)
 {
+  std::string note_from;
+  in >> note_from;
+  if (notes.find(note_from) == notes.end()) {
+    throw std::logic_error("Note with this name doesnt exist");
+  }
 
 }
 
 void hvostov::expiredNote(std::istream& in, std::ostream&, NoteBook& notes)
 {
+  std::string note_from;
+  in >> note_from;
+  if (notes.find(note_from) == notes.end()) {
+    throw std::logic_error("Note with this name doesnt exist");
+  }
 
 }
 
 void hvostov::refreshNote(std::istream& in, std::ostream&, NoteBook& notes)
 {
+  std::string note_from;
+  in >> note_from;
+  if (notes.find(note_from) == notes.end()) {
+    throw std::logic_error("Note with this name doesnt exist");
+  }
 
 }
