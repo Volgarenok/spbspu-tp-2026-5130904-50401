@@ -56,6 +56,14 @@ void hvostov::linkNote(std::istream& in, std::ostream&, NoteBook& notes)
   } else if (notes.find(note_to) == notes.end()) {
     throw std::logic_error("Note with this name doesnt exist");
   }
+  auto& links = notes[note_from]->linked_notes;
+  for (auto it = links.begin(); it != links.end(); it++) {
+    if (auto linked = it->lock()) {
+      if (linked->name == note_to) {
+        throw std::logic_error("Link already exists");
+      }
+    }
+  }
   notes[note_from]->linked_notes.push_back(notes[note_to]);
 }
 
