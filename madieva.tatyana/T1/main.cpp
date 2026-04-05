@@ -64,6 +64,34 @@ void add_line(std::istream & in,
   note->text.push_back(str);
 }
 
+void show(std::istream & in,
+  std::ostream & out,
+  std::map<std::string, std::shared_ptr< Note >> & notebook)
+{
+  std::string name;
+  if (!(in >> name)) {
+    out << "<INVALID COMMAND>\n";
+    return;
+  }
+  auto it = notebook.find(name);
+  if (it == notebook.end()) {
+    out << "<INVALID COMMAND>\n";
+    auto toignor = std::numeric_limits< std::streamsize >::max();
+    in.ignore(toignor, '\n');
+    return;
+  }
+  std::string remainder;
+  getline(in, remainder);
+  if (!remainder.empty()) {
+    out << "<INVALID COMMAND>\n";
+    return;
+  }
+  auto note = it->second;
+  for (size_t i = 0; i < note->text.size(); ++i) {
+    out << note->text[i] << "\n";
+  }
+}
+
 int main()
 {
   std::map<std::string, std::shared_ptr< Note >> notebook;
@@ -73,6 +101,7 @@ int main()
   std::map< std::string, cmd_t > cmds;
   cmds["note"] = create_note;
   cmds["line"] = add_line;
+  cmds["show"] = show;
 
   std::string cmd;
   while (std::cin >> cmd) {
