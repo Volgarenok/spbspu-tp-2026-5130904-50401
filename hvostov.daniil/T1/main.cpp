@@ -9,12 +9,16 @@ struct Note {
 
 void addNote(std::istream&, std::ostream&, std::unordered_map< Note >& notes)
 {
-
+  std::string name;
+  in >> name;
+  if (notes.find(name) != notes.end()) {
+    throw std::logic_error("Note with this name already exist!");
+  }
+  notes[name] = std::make_shared< Note >{name};
 }
 
 void addLine(std::istream&, std::ostream&, std::unordered_map< Note >& notes)
 {
-
 }
 
 void showNote(std::istream&, std::ostream&, std::unordered_map< Note >& notes)
