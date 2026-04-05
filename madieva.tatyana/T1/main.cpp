@@ -147,6 +147,34 @@ void link(std::istream & in,
   note->pointers.push_back(obj);
 }
 
+void halt(std::istream & in,
+  std::ostream & out,
+  std::map<std::string, std::shared_ptr< Note >> & notebook)
+{
+  std::string name1;
+  auto it1 = find_name(in, out, notebook, name1);
+  if (it1 == notebook.end()) {
+    return;
+  }
+  std::string name2;
+  if (!(in >> name2)) {
+    out << "<INVALID COMMAND>\n";
+    return;
+  }
+  if (!the_end(in, out)) {
+    return;
+  }
+  auto node = it1->second;
+  auto it = node->pointers.begin();
+  for (; it != node->pointers.end(); ++it) {
+    auto temp = it->lock();
+    if (temp && temp->name == name2) {
+      node->pointers.erase(it);
+      return;
+    }
+  }
+}
+
 int main()
 {
   std::map<std::string, std::shared_ptr< Note >> notebook;
