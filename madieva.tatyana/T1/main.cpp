@@ -11,6 +11,37 @@ struct Note {
   std::vector< std::weak_ptr< Note >> pointers;
 };
 
+auto  find_name(std::istream & in,
+  std::ostream & out,
+  std::map<std::string, std::shared_ptr< Note >> & notebook,
+  std::string & name)
+{
+  if (!(in >> name)) {
+    out << "<INVALID COMMAND>\n";
+    return notebook.end();
+  }
+  auto it = notebook.find(name);
+  if (it == notebook.end()) {
+    out << "<INVALID COMMAND>\n";
+    auto toignor = std::numeric_limits< std::streamsize >::max();
+    in.ignore(toignor, '\n');
+    return notebook.end();
+  }
+  return it;
+}
+
+bool the_end(std::istream & in,
+  std::ostream & out)
+{
+  std::string remainder;
+  getline(in, remainder);
+  if (!remainder.empty()) {
+    out << "<INVALID COMMAND>\n";
+    return false;
+  }
+  return true;
+}
+
 void create_note(std::istream & in,
   std::ostream & out,
   std::map<std::string, std::shared_ptr< Note >> & notebook)
@@ -20,10 +51,7 @@ void create_note(std::istream & in,
     out << "<INVALID COMMAND>\n";
     return;
   }
-  std::string remainder;
-  getline(in, remainder);
-  if (!remainder.empty()) {
-    out << "<INVALID COMMAND>\n";
+  if (!the_end(in, out)) {
     return;
   }
   if (notebook.count(name) == 0) {
@@ -38,15 +66,8 @@ void add_line(std::istream & in,
   std::map<std::string, std::shared_ptr< Note >> & notebook)
 {
   std::string name;
-  if (!(in >> name)) {
-    out << "<INVALID COMMAND>\n";
-    return;
-  }
-  auto it = notebook.find(name);
+  auto it = find_name(in, out, notebook, name);
   if (it == notebook.end()) {
-    out << "<INVALID COMMAND>\n";
-    auto toignor = std::numeric_limits< std::streamsize >::max();
-    std::cin.ignore(toignor, '\n');
     return;
   }
   std::string str;
@@ -54,10 +75,7 @@ void add_line(std::istream & in,
     out << "<INVALID COMMAND>\n";
     return;
   }
-  std::string remainder;
-  getline(in, remainder);
-  if (!remainder.empty()) {
-    out << "<INVALID COMMAND>\n";
+  if (!the_end(in, out)) {
     return;
   }
   std::shared_ptr< Note > note = it->second;
@@ -69,21 +87,11 @@ void show(std::istream & in,
   std::map<std::string, std::shared_ptr< Note >> & notebook)
 {
   std::string name;
-  if (!(in >> name)) {
-    out << "<INVALID COMMAND>\n";
-    return;
-  }
-  auto it = notebook.find(name);
+  auto it = find_name(in, out, notebook, name);
   if (it == notebook.end()) {
-    out << "<INVALID COMMAND>\n";
-    auto toignor = std::numeric_limits< std::streamsize >::max();
-    in.ignore(toignor, '\n');
     return;
   }
-  std::string remainder;
-  getline(in, remainder);
-  if (!remainder.empty()) {
-    out << "<INVALID COMMAND>\n";
+  if (!the_end(in, out)) {
     return;
   }
   auto note = it->second;
@@ -91,6 +99,19 @@ void show(std::istream & in,
     out << note->text[i] << "\n";
   }
 }
+
+void drop(std::istream & in,
+  std::ostream & out,
+  std::map<std::string, std::shared_ptr< Note >> & notebook)
+{
+  std::string name;
+  auto it = find_name(in, out, notebook, name);
+  if (it == notebook.end()) {
+    return;
+  }
+  notebook.erase(it);
+}
+
 
 int main()
 {
@@ -102,6 +123,7 @@ int main()
   cmds["note"] = create_note;
   cmds["line"] = add_line;
   cmds["show"] = show;
+  cmds["drop"] = drop;
 
   std::string cmd;
   while (std::cin >> cmd) {
