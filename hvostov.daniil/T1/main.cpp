@@ -54,14 +54,14 @@ void showNote(std::istream& in, std::ostream& out, NoteBook& notes)
   }
 }
 
-void dropNote(std::istream&, std::ostream&, NoteBook& notes)
+void dropNote(std::istream& in, std::ostream&, NoteBook& notes)
 {
   std::string name;
   in >> name;
-  if (names.find(name) == names.end()) {
+  if (notes.find(name) == notes.end()) {
     throw std::logic_error("Note with this name doesnt exist");
   }
-  names.erase(name);
+  notes.erase(name);
 }
 
 int main()
@@ -76,13 +76,17 @@ int main()
   std::string cmd;
   while (std::cin >> cmd) {
     try {
-      cmds.at(cmd)(std::cin, std::cout, notes);
-    } catch (const std::out_of_range&) {
+      if (cmds.find(cmd) != cmds.end()) {
+        cmds.at(cmd)(std::cin, std::cout, notes);
+      } else {
+        std::cout << "<INVALID COMMAND>\n";
+        auto toignore = std::numeric_limits< std::streamsize >::max();
+        std::cin.ignore(toignore, '\n');
+      }
+    } catch (const std::logic_error& e) {
       std::cout << "<INVALID COMMAND>\n";
       auto toignore = std::numeric_limits< std::streamsize >::max();
       std::cin.ignore(toignore, '\n');
-    } catch (const std::logic_error& e) {
-      std::cout << "<INVALID COMMAND: " << e.what() << ">\n";
     }
   }
   if (!std::cin.eof()) {
