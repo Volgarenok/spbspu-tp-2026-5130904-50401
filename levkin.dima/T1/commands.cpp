@@ -29,9 +29,10 @@ void note(std::istream& in, std::ostream&, Database& db)
 void line(std::istream& in, std::ostream&, Database& db)
 {
     std::string name = getWord(in);
-    if (db.count(name)) {
-        std::shared_ptr<Note> curr = db[name];
-        curr->addContent(getQuote(in));
+    auto it = db.find(name);
+
+    if (it != db.end()) {
+        it->second->addContent(getQuote(in));
     } else {
         throw std::logic_error("don't know this note yet\n");
     }
