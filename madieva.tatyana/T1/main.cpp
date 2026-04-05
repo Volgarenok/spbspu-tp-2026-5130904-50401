@@ -109,9 +109,43 @@ void drop(std::istream & in,
   if (it == notebook.end()) {
     return;
   }
+  if (!the_end(in, out)) {
+    return;
+  }
   notebook.erase(it);
 }
 
+void link(std::istream & in,
+  std::ostream & out,
+  std::map<std::string, std::shared_ptr< Note >> & notebook)
+{
+  std::string name1;
+  auto it1 = find_name(in, out, notebook, name1);
+  if (it1 == notebook.end()) {
+    return;
+  }
+  std::string name2;
+  auto it2 = find_name(in, out, notebook, name2);
+  if (it2 == notebook.end()) {
+    return;
+  }
+  if (it1 == it2) {
+    out << "<INVALID COMMAND>\n";
+    return;
+  }
+  if (!the_end(in, out)) {
+    return;
+  }
+  std::shared_ptr< Note > note = it1->second;
+  std::weak_ptr< Note > obj = it2->second;
+  bool repeat = false;
+  for (size_t i = 0; i < note->pointers.size() && !repeat; ++i) {
+    if (!note->pointers[i].expired() && note->pointers[i].lock() == it2->second) {
+      repeat = true;
+    }
+  }
+  note->pointers.push_back(obj);
+}
 
 int main()
 {
@@ -124,6 +158,7 @@ int main()
   cmds["line"] = add_line;
   cmds["show"] = show;
   cmds["drop"] = drop;
+  cmds["link"] = link;
 
   std::string cmd;
   while (std::cin >> cmd) {
