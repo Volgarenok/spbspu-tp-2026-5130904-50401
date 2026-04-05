@@ -124,5 +124,12 @@ void hvostov::refreshNote(std::istream& in, std::ostream&, NoteBook& notes)
   if (notes.find(note_from) == notes.end()) {
     throw std::logic_error("Note with this name doesnt exist");
   }
-
+  auto& links = notes[note_from]->linked_notes;
+  for (auto it = links.begin(); it != links.end();) {
+    if (it->expired()) {
+      it = links.erase(it);
+    } else {
+      it++;
+    }
+  }
 }
