@@ -46,3 +46,28 @@ void hvostov::dropNote(std::istream& in, std::ostream&, NoteBook& notes)
   }
   notes.erase(name);
 }
+
+void hvostov::linkNote(std::istream& in, std::ostream&, NoteBook& notes)
+{
+
+}
+
+void hvostov::haltNote(std::istream& in, std::ostream&, NoteBook& notes)
+{
+
+}
+
+void hvostov::mindNote(std::istream& in, std::ostream&, NoteBook& notes)
+{
+
+}
+
+void hvostov::expiredNote(std::istream& in, std::ostream&, NoteBook& notes)
+{
+
+}
+
+void hvostov::refreshNote(std::istream& in, std::ostream&, NoteBook& notes)
+{
+
+}
