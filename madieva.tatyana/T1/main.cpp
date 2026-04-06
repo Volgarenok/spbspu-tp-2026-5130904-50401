@@ -59,6 +59,9 @@ namespace madieva {
       auto n = std::make_shared< Note >();
       n->name = name;
       notebook.insert({name, n});
+    } else {
+      out << "<INVALID COMMAND>\n";
+      return;
     }
   }
 
@@ -96,8 +99,13 @@ namespace madieva {
       return;
     }
     auto note = it->second;
+    bool empty = true;
     for (size_t i = 0; i < note->text.size(); ++i) {
       out << note->text[i] << "\n";
+      empty = false;
+    }
+    if (empty) {
+      out << "\n";
     }
   }
 
@@ -130,10 +138,6 @@ namespace madieva {
     if (it2 == notebook.end()) {
       return;
     }
-    if (it1 == it2) {
-      out << "<INVALID COMMAND>\n";
-      return;
-    }
     if (!the_end(in, out)) {
       return;
     }
@@ -144,6 +148,10 @@ namespace madieva {
       if (!note->pointers[i].expired() && note->pointers[i].lock() == it2->second) {
         repeat = true;
       }
+    }
+    if (repeat) {
+      out << "<INVALID COMMAND>\n";
+      return;
     }
     note->pointers.push_back(obj);
   }
@@ -158,8 +166,8 @@ namespace madieva {
       return;
     }
     std::string name2;
-    if (!(in >> name2)) {
-      out << "<INVALID COMMAND>\n";
+    auto it2 = find_name(in, out, notebook, name2);
+    if (it2 == notebook.end()) {
       return;
     }
     if (!the_end(in, out)) {
@@ -188,11 +196,16 @@ namespace madieva {
     if (!the_end(in, out)) {
       return;
     }
+    bool exists = false;
     auto itp = it->second->pointers.begin();
     for (; itp != it->second->pointers.end(); ++itp) {
       if (itp->lock()) {
         out << itp->lock()->name << "\n";
+        exists = true;
       }
+    }
+    if (!exists) {
+      out << "\n";
     }
   }
 
