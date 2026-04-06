@@ -195,6 +195,50 @@ void mind(std::istream & in,
   }
 }
 
+void expired(std::istream & in,
+  std::ostream & out,
+  std::map<std::string, std::shared_ptr< Note >> & notebook)
+{
+  std::string name;
+  auto it = find_name(in, out, notebook, name);
+  if (it == notebook.end()) {
+    return;
+  }
+  if (!the_end(in, out)) {
+    return;
+  }
+  size_t count = 0;
+  auto itp = it->second->pointers.begin();
+  for (; itp != it->second->pointers.end(); ++itp) {
+    if (!itp->lock()) {
+      count++;
+    }
+  }
+  out << count << "\n";
+}
+
+void refresh(std::istream & in,
+  std::ostream & out,
+  std::map<std::string, std::shared_ptr< Note >> & notebook)
+{
+  std::string name;
+  auto it = find_name(in, out, notebook, name);
+  if (it == notebook.end()) {
+    return;
+  }
+  if (!the_end(in, out)) {
+    return;
+  }
+  std::vector< std::weak_ptr< Note >> temp;
+  auto itp = it->second->pointers.begin();
+  for(; itp != it->second->pointers.end(); ++itp) {
+    if (itp->lock()) {
+      temp.push_back(*itp);
+    }
+  }
+  it->second->pointers.swap(temp);
+}
+
 int main()
 {
   std::map<std::string, std::shared_ptr< Note >> notebook;
