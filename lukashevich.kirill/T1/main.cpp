@@ -14,12 +14,18 @@ int main()
   cmds["line"] = &Notebook::line;
   cmds["show"] = &Notebook::show;
   cmds["drop"] = &Notebook::drop;
+  cmds["link"] = &Notebook::link;
+  cmds["halt"] = &Notebook::halt;
+  cmds["mind"] = &Notebook::mind;
+  cmds["expired"] = &Notebook::expired;
+  cmds["refresh"] = &Notebook::refresh;
 
   std::string cmd;
   while (std::cin >> cmd)
   {
     try
     {
+      cmds.at(cmd);
       std::string name;
       std::cin >> name;
       (nb.*cmds.at(cmd))(std::cin, std::cout, name);
@@ -30,10 +36,10 @@ int main()
       auto toignore = std::numeric_limits< std::streamsize >::max();
       std::cin.ignore(toignore, '\n');
     }
-    catch (const std::logic_error &e)
+    catch (const std::logic_error&)
     {
-      std::cout << "<INVALID COMMAND: " << e.what() << ">\n";
-    };
+      std::cout << "<INVALID COMMAND>\n";
+    }
   }
 
   if (!std::cin.eof())
