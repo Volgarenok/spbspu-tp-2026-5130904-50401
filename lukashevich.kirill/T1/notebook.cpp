@@ -43,6 +43,10 @@ void lukashevich::Notebook::show(std::istream&, std::ostream& out, const std::st
         out << text[i] << '\n';
       }
     }
+    else
+    {
+      out << '\n';
+    }
   }
   catch(std::out_of_range &)
   {
@@ -92,6 +96,7 @@ void lukashevich::Notebook::halt(std::istream& in, std::ostream&, const std::str
     in >> noteToRemove;
     try
     {
+      notes_.at(noteToRemove);
       notes_.at(name).get()->links_.at(noteToRemove);
     }
     catch(std::out_of_range &)
@@ -127,6 +132,10 @@ void lukashevich::Notebook::mind(std::istream&, std::ostream& out, const std::st
         out << resVec[resVec.size() - 1 - i] << '\n';
       }
     }
+    else
+    {
+      out << '\n';
+    }
   }
   catch(std::out_of_range &)
   {
@@ -142,7 +151,7 @@ void lukashevich::Notebook::expired(std::istream&, std::ostream& out, const std:
     size_t counter = 0;
     for (auto i = currLinks.begin(); i != currLinks.end(); ++i)
     {
-      if (!(i->second).lock().get())
+      if (!(i->second).lock())
       {
         counter++;
       }
