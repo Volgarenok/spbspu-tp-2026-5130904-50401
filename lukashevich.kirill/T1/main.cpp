@@ -45,7 +45,7 @@ int main()
   if (!std::cin.eof())
   {
     std::cerr << "Bad input\n";
-    return 1;dfdfdfd
+    return 1;
   }
   return 0;
 }
