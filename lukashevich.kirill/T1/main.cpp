@@ -12,6 +12,8 @@ int main()
   std::unordered_map< std::string, cmd_t > cmds;
   cmds["note"] = &Notebook::note;
   cmds["line"] = &Notebook::line;
+  cmds["show"] = &Notebook::show;
+  cmds["drop"] = &Notebook::drop;
 
   std::string cmd;
   while (std::cin >> cmd)

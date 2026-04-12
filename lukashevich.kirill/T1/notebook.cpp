@@ -32,3 +32,32 @@ void lukashevich::Notebook::line(std::istream& in, std::ostream&, const std::str
   }
   throw std::logic_error("there is no note with this name");
 }
+
+void lukashevich::Notebook::show(std::istream&, std::ostream& out, const std::string& name)
+{
+  for (size_t i = 0; i < notes_.size(); ++i)
+  {
+    if (notes_[i].name_ == name)
+    {
+      for (size_t j = 0; j < notes_[i].text_.size(); ++j)
+      {
+        out << notes_[i].text_[j] << '\n';
+      }
+      return;
+    }
+  }
+  throw std::logic_error("there is no note with this name");
+}
+
+void lukashevich::Notebook::drop(std::istream&, std::ostream&, const std::string& name)
+{
+  for (size_t i = 0; i < notes_.size(); ++i)
+  {
+    if (notes_[i].name_ == name)
+    {
+      notes_.erase(notes_.begin() + i);
+      return;
+    }
+  }
+  throw std::logic_error("there is no note with this name");
+}
