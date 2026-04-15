@@ -54,14 +54,21 @@ void show(std::istream& in, std::ostream& out, Database& db)
 {
     std::string name = getWord(in);
     auto it = findNote(db, name);
-    
+
     for (std::string str : it->second->getContent()) {
         out << str;
         out << "\n";
     }
 }
 
-void drop(std::istream& in, std::ostream& out, Database& db);
+void drop(std::istream& in, std::ostream& out, Database& db)
+{
+    std::string name = getWord(in);
+    if (db.erase(name) == 0) {
+        throw std::logic_error("don't know this note yet\n");
+    }
+}
+
 void link(std::istream& in, std::ostream& out, Database& db);
 void halt(std::istream& in, std::ostream& out, Database& db);
 void mind(std::istream& in, std::ostream& out, Database& db);
