@@ -16,6 +16,36 @@ void Note::addContent(std::string s)
     content.push_back(std::move(s));
 }
 
+void Note::rmLink(Link ptr)
+{
+    std::shared_ptr<Note> target = ptr.lock();
+    if (!target)
+        return;
+
+    std::erase(
+        std::remove_if(links.begin(), links.end(),
+            [&](Link& el) {
+                return el.lock() == target;
+            }),
+        links.end());
+
+    //  TODO: two pointers
+}
+void Note::addLink(Link ptr)
+{
+    for (Link curr : links) {
+        if (curr.lock().get() == ptr) {
+            throw std::logic_error("Double linking is not allowed\n");
+        }
+    }
+    links.push_back(ptr);
+}
+
+const std::vector<Link>& Note::getLinks() const
+{
+    return links;
+}
+
 const std::vector<std::string>& Note::getContent() const
 {
     return content;
@@ -69,7 +99,9 @@ void drop(std::istream& in, std::ostream& out, Database& db)
     }
 }
 
-void link(std::istream& in, std::ostream& out, Database& db);
+void link(std::istream& in, std::ostream& out, Database& db)
+{
+}
 void halt(std::istream& in, std::ostream& out, Database& db);
 void mind(std::istream& in, std::ostream& out, Database& db);
 void expired(std::istream& in, std::ostream& out, Database& db);

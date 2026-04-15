@@ -7,20 +7,27 @@
 #include <unordered_map>
 #include <vector>
 namespace levkin {
+class Note;
+
+using Database = std::unordered_map<std::string, std::shared_ptr<Note>>;
+using Link = std::weak_ptr<Note>;
+using cmd_t = void (*)(std::istream&, std::ostream&, Database&);
+using Cmds = std::unordered_map<std::string, cmd_t>;
 class Note {
 public:
     Note(std::string s);
     void addContent(std::string c);
-    const std::vector<std::string> &getContent() const;
+    const std::vector<std::string>& getContent() const;
+
+    const std::vector<Link>& getLinks() const;
+    void rmLink(Link ptr);
+    void addLink(Link ptr);
 
 private:
     std::string id;
     std::vector<std::string> content;
+    std::vector<Link> links;
 };
-
-using Database = std::unordered_map<std::string, std::shared_ptr<Note>>;
-using cmd_t = void (*)(std::istream&, std::ostream&, Database&);
-using Cmds = std::unordered_map<std::string, cmd_t>;
 
 void note(std::istream& in, std::ostream& out, Database& db);
 void line(std::istream& in, std::ostream& out, Database& db);
