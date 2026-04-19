@@ -23,22 +23,20 @@ void Note::rmLink(Link ptr)
         return;
 
     auto destination = links.begin();
-    size_t ind = 0;
-    for (auto from : links) {
-        auto locked = from.lock();
-        if (locked != target) {
-            links[ind++] = locked;
+    size_t writeIndex = 0;
+    for (size_t readIndex = 0; readIndex < links.size(); ++readIndex) {
+        if (links[readIndex].lock() != target) {
+            links[writeIndex] = links[readIndex];
+            writeIndex++;
         }
     }
-    size_t removeCound = links.size() - ind - 1;
-    for (; removeCound-- >= 0;) {
-        links.pop_back();
-    }
+    links.resize(writeIndex);
 }
+
 void Note::addLink(Link ptr)
 {
     for (Link curr : links) {
-        if (curr.lock().get() == ptr) {
+        if (curr.lock() == ptr.lock()) {
             throw std::logic_error("Double linking is not allowed\n");
         }
     }
