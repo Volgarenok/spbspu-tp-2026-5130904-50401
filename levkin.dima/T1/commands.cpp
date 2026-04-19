@@ -103,7 +103,15 @@ void drop(std::istream& in, std::ostream& out, Database& db)
 
 void link(std::istream& in, std::ostream& out, Database& db)
 {
+    std::string from = getWord(in);
+    std::string to = getWord(in);
+
+    auto fromNoteIter = findNote(db, from);
+    auto toNoteIter = findNote(db, to);
+    
+    fromNoteIter->second->addLink(toNoteIter->second);
 }
+
 void halt(std::istream& in, std::ostream& out, Database& db);
 void mind(std::istream& in, std::ostream& out, Database& db);
 void expired(std::istream& in, std::ostream& out, Database& db);
