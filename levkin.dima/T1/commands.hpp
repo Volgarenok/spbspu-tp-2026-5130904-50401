@@ -23,6 +23,8 @@ public:
     void rmLink(Link ptr);
     void addLink(Link ptr);
 
+    const std::string& getId() const;
+    
 private:
     std::string id;
     std::vector<std::string> content;

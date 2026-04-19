@@ -123,8 +123,35 @@ void halt(std::istream& in, std::ostream& out, Database& db)
     fromNoteIter->second->rmLink(toNoteIter->second);
 }
 
-void mind(std::istream& in, std::ostream& out, Database& db);
-void expired(std::istream& in, std::ostream& out, Database& db);
+void mind(std::istream& in, std::ostream& out, Database& db)
+{
+    std::string name = getWord(in);
+    auto it = findNote(db, name);
+
+    std::shared_ptr<Note> note = it->second;
+
+    for (auto link : note->getLinks()) {
+        std::shared_ptr locked = link.lock();
+        out << locked->getId();
+        out << "\n";
+    }
+}
+
+void expired(std::istream& in, std::ostream& out, Database& db)
+{
+    std::string name = getWord(in);
+    auto it = findNote(db, name);
+    std::shared_ptr<Note> note = it->second;
+
+    size_t count = 0;
+    for (auto link : note->getLinks()) {
+        if (link.expired()) {
+            count++;
+        }
+    }
+    out << count;
+    out << "\n";
+}
 void refresh(std::istream& in, std::ostream& out, Database& db);
 
 Cmds getCmds()
