@@ -150,6 +150,8 @@ void refresh(std::istream& in, std::ostream&, Database& db)
 std::string name = getWord(in);
 auto it = findNote(db, name);
 std::shared_ptr< Note > note = it->second;
+
+note->cleanExpired();
 }
 
 Cmds getCmds()
