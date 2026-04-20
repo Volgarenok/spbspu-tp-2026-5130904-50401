@@ -1,9 +1,9 @@
 #include "commands.hpp"
 #include <iostream>
 #include <memory>
-#include <vector>
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include "utils.hpp"
 
 namespace levkin {
@@ -17,157 +17,156 @@ void Note::addContent(std::string s) { content.push_back(std::move(s)); }
 
 void Note::cleanExpired()
 {
-eraseIf([](std::weak_ptr< Note >& curr) { return curr.expired(); });
+  eraseIf([](std::weak_ptr< Note >& curr) { return curr.expired(); });
 }
 
 void Note::rmLink(Link ptr)
 {
-std::shared_ptr< Note > target = ptr.lock();
-if (!target)
+  std::shared_ptr< Note > target = ptr.lock();
+  if (!target)
     return;
 
-eraseIf([&target](const Link& curr) { return curr.lock() == target; });
+  eraseIf([&target](const Link& curr) { return curr.lock() == target; });
 }
 
 void Note::addLink(Link ptr)
 {
-for (Link curr : links) {
+  for (Link curr : links) {
     if (curr.lock() == ptr.lock()) {
-    throw std::logic_error("Double linking is not allowed");
+      throw std::logic_error("Double linking is not allowed");
     }
-}
-links.push_back(ptr);
+  }
+  links.push_back(ptr);
 }
 
 const std::vector< Link >& Note::getLinks() const { return links; }
 
 const std::vector< std::string >& Note::getContent() const { return content; }
 
-
 void note(std::istream& in, std::ostream&, Database& db)
 {
-std::string name = getWord(in);
-if (name.empty())
+  std::string name = getWord(in);
+  if (name.empty())
     return;
-db[name] = std::make_shared< Note >(name);
+
+  if (db.find(name) != db.end()) {
+    throw std::logic_error("already exists");
+  }
+  [name] = std::make_shared< Note >(name);
 }
 
 auto findNote(Database& db, std::string& name)
 {
-auto it = db.find(name);
-if (it == db.end()) {
+  auto it = db.find(name);
+  if (it == db.end()) {
     throw std::logic_error("don't know this note yet");
-}
-return it;
+  }
+  return it;
 }
 
 void line(std::istream& in, std::ostream&, Database& db)
 {
-std::string name = getWord(in);
-auto it = findNote(db, name);
+  std::string name = getWord(in);
+  auto it = findNote(db, name);
 
-it->second->addContent(getQuote(in));
+  it->second->addContent(getQuote(in));
 }
 
 void show(std::istream& in, std::ostream& out, Database& db)
 {
-std::string name = getWord(in);
-auto it = findNote(db, name);
+  std::string name = getWord(in);
+  auto it = findNote(db, name);
 
-for (std::string str : it->second->getContent()) {
+  for (std::string str : it->second->getContent()) {
     out << str;
     out << "\n";
-}
+  }
 }
 
-const std::string& Note::getId() const
-{
-return id;
-}
+const std::string& Note::getId() const { return id; }
 
 void drop(std::istream& in, std::ostream&, Database& db)
 {
-std::string name = getWord(in);
-if (db.erase(name) == 0) {
+  std::string name = getWord(in);
+  if (db.erase(name) == 0) {
     throw std::logic_error("don't know this note yet");
-}
+  }
 }
 
 void link(std::istream& in, std::ostream&, Database& db)
 {
-std::string from = getWord(in);
-std::string to = getWord(in);
+  std::string from = getWord(in);
+  std::string to = getWord(in);
 
-auto fromNoteIter = findNote(db, from);
-auto toNoteIter = findNote(db, to);
+  auto fromNoteIter = findNote(db, from);
+  auto toNoteIter = findNote(db, to);
 
-fromNoteIter->second->addLink(toNoteIter->second);
+  fromNoteIter->second->addLink(toNoteIter->second);
 }
 
 void halt(std::istream& in, std::ostream&, Database& db)
 {
-std::string from = getWord(in);
-std::string to = getWord(in);
+  std::string from = getWord(in);
+  std::string to = getWord(in);
 
-auto fromNoteIter = findNote(db, from);
-auto toNoteIter = findNote(db, to);
+  auto fromNoteIter = findNote(db, from);
+  auto toNoteIter = findNote(db, to);
 
-fromNoteIter->second->rmLink(toNoteIter->second);
+  fromNoteIter->second->rmLink(toNoteIter->second);
 }
 
 void mind(std::istream& in, std::ostream& out, Database& db)
 {
-std::string name = getWord(in);
-auto it = findNote(db, name);
+  std::string name = getWord(in);
+  auto it = findNote(db, name);
 
-std::shared_ptr< Note > note = it->second;
+  std::shared_ptr< Note > note = it->second;
 
-for (auto link : note->getLinks()) {
+  for (auto link : note->getLinks()) {
     if (auto locked = link.lock()) {
-    out << locked->getId();
-    out << "\n";
-
+      out << locked->getId();
+      out << "\n";
     }
-}
+  }
 }
 
 void expired(std::istream& in, std::ostream& out, Database& db)
 {
-std::string name = getWord(in);
-auto it = findNote(db, name);
-std::shared_ptr< Note > note = it->second;
+  std::string name = getWord(in);
+  auto it = findNote(db, name);
+  std::shared_ptr< Note > note = it->second;
 
-size_t count = 0;
-for (auto link : note->getLinks()) {
+  size_t count = 0;
+  for (auto link : note->getLinks()) {
     if (link.expired()) {
-    count++;
+      count++;
     }
-}
-out << count;
-out << "\n";
+  }
+  out << count;
+  out << "\n";
 }
 
 void refresh(std::istream& in, std::ostream&, Database& db)
 {
-std::string name = getWord(in);
-auto it = findNote(db, name);
-std::shared_ptr< Note > note = it->second;
+  std::string name = getWord(in);
+  auto it = findNote(db, name);
+  std::shared_ptr< Note > note = it->second;
 
-note->cleanExpired();
+  note->cleanExpired();
 }
 
 Cmds getCmds()
 {
-Cmds cmds;
-cmds["note"] = note;
-cmds["line"] = line;
-cmds["show"] = show;
-cmds["drop"] = drop;
-cmds["link"] = link;
-cmds["halt"] = halt;
-cmds["mind"] = mind;
-cmds["expired"] = expired;
-cmds["refresh"] = refresh;
-return cmds;
+  Cmds cmds;
+  cmds["note"] = note;
+  cmds["line"] = line;
+  cmds["show"] = show;
+  cmds["drop"] = drop;
+  cmds["link"] = link;
+  cmds["halt"] = halt;
+  cmds["mind"] = mind;
+  cmds["expired"] = expired;
+  cmds["refresh"] = refresh;
+  return cmds;
 }
 }
