@@ -26,7 +26,7 @@ std::shared_ptr< Note > target = ptr.lock();
 if (!target)
     return;
 
-eraseIf([&target](const Link& curr) { return curr.lock() != target; });
+eraseIf([&target](const Link& curr) { return curr.lock() == target; });
 }
 
 void Note::addLink(Link ptr)
