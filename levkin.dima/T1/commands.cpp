@@ -72,14 +72,18 @@ void line(std::istream& in, std::ostream&, Database& db)
   it->second->addContent(getQuote(in));
 }
 
+
 void show(std::istream& in, std::ostream& out, Database& db)
 {
   std::string name = getWord(in);
   auto it = findNote(db, name);
 
-  for (std::string str : it->second->getContent()) {
-    out << str;
+  if (it->second->getContent().empty()) {
     out << "\n";
+  } else {
+    for (const std::string& str : it->second->getContent()) {
+      out << str << "\n";
+    }
   }
 }
 
@@ -119,14 +123,18 @@ void mind(std::istream& in, std::ostream& out, Database& db)
 {
   std::string name = getWord(in);
   auto it = findNote(db, name);
-
   std::shared_ptr< Note > note = it->second;
 
+  bool hasOutput = false;
   for (auto link : note->getLinks()) {
     if (auto locked = link.lock()) {
-      out << locked->getId();
-      out << "\n";
+      out << locked->getId() << "\n";
+      hasOutput = true;
     }
+  }
+
+  if (!hasOutput) {
+    out << "\n";
   }
 }
 
